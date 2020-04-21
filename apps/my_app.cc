@@ -3,7 +3,6 @@
 #include "my_app.h"
 
 #include <cinder/app/App.h>
-#include
 
 namespace myapp {
 
