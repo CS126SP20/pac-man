@@ -3,7 +3,7 @@
 #include "my_app.h"
 
 #include <cinder/app/App.h>
-#include <Choreograph.cpp>
+#include
 
 namespace myapp {
 
