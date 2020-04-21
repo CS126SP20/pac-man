@@ -9,12 +9,14 @@
 using cinder::app::App;
 using cinder::app::RendererGl;
 
-
 namespace myapp {
 
 const int kSamples = 8;
-const int kWidth = 800;
-const int kHeight = 800;
+const int kBoardWidth = 28; // Standard width of traditional Pac-Man board
+const int kBoardHeight = 36; // Standard height of traditional Pac-Man board
+
+const int kWidth = kBoardWidth * 22;
+const int kHeight = kBoardHeight * 22;
 
 void SetUp(App::Settings* settings) {
   settings->setWindowSize(kWidth, kHeight);
