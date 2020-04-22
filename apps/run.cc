@@ -3,6 +3,8 @@
 #include <cinder/app/App.h>
 #include <cinder/app/RendererGl.h>
 #include <iostream>
+#include <string>
+#include <vector>
 
 #include "my_app.h"
 
@@ -18,17 +20,25 @@ const int kBoardHeight = 36; // Standard height of traditional Pac-Man board
 const int kWidth = kBoardWidth * 22;
 const int kHeight = kBoardHeight * 22;
 
-void SetUp(App::Settings* settings, int argc, char** argv) {
-  settings->setWindowSize(kWidth, kHeight);
-  settings->setTitle("My CS 126 Application");
+void ParseArgs(std::vector<std::string>* args) {
+  int argc = static_cast<int>(args->size());
 
-  std::string file = argv[1];
-  std::ifstream infile(file);
-
-  if (infile.fail()) {
-    std::cerr << "Error: " << (std::error_code()) << std::endl;
+  std::vector<char*> argvs;
+  for (std::string& str : *args) {
+    argvs.push_back(&str[0]);
   }
 
+  char** argv = argvs.data();
+  
+
+}
+
+void SetUp(App::Settings* settings) {
+  std::vector<std::string> args = settings->getCommandLineArgs();
+  ParseArgs(&args);
+
+  settings->setWindowSize(kWidth, kHeight);
+  settings->setTitle("My CS 126 Application");
 
 
 }
