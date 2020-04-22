@@ -4,6 +4,7 @@
 
 #include <cinder/app/App.h>
 #include <cinder/Vector.h>
+#include <gflags/gflags.h>
 
 namespace myapp {
 
@@ -17,9 +18,15 @@ using std::chrono::duration_cast;
 using std::chrono::seconds;
 using std::chrono::system_clock;
 
+DECLARE_uint32(width);
+DECLARE_uint32(height);
+DECLARE_uint32(tilesize);
+DECLARE_uint32(speed);
+DECLARE_string(map_file);
+
 MyApp::MyApp()
-    : engine{28, 36},
-      tile_size(22) {}
+    : engine{FLAGS_width, FLAGS_height},
+      tile_size(FLAGS_tilesize) {}
 
 void MyApp::setup() {
   pac_man_image = cinder::gl::Texture::create(

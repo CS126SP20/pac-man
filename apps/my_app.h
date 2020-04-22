@@ -6,6 +6,7 @@
 #include <cinder/app/App.h>
 #include <cinder/gl/gl.h>
 #include <cinder/gl/Texture.h>
+#include <gflags/gflags.h>
 
 #include <mylibrary/engine.h>
 #include <mylibrary/direction.h>

@@ -2,6 +2,7 @@
 
 #include <cinder/app/App.h>
 #include <cinder/app/RendererGl.h>
+#include <gflags/gflags.h>
 #include <iostream>
 #include <string>
 #include <vector>
@@ -13,12 +14,15 @@ using cinder::app::RendererGl;
 
 namespace myapp {
 
-const int kSamples = 8;
-const int kBoardWidth = 28; // Standard width of traditional Pac-Man board
-const int kBoardHeight = 36; // Standard height of traditional Pac-Man board
+DEFINE_uint32(width, 28, "the number of tiles in a row");
+DEFINE_uint32(height, 36, "the number of tiles in a column");
+DEFINE_uint32(tilesize, 22, "the size of each tile");
+DEFINE_uint32(speed, 50, "the speed (delay) of the game");
 
-const int kWidth = kBoardWidth * 22;
-const int kHeight = kBoardHeight * 22;
+std::string file_name = "/Users/bzhang/Downloads/cinder_0.9.2_mac/my-projects/final-project-bzhang33/tests/data/standard_map";
+DEFINE_string(map_file, file_name,"the file of the map");
+
+const int kSamples = 8;
 
 void ParseArgs(std::vector<std::string>* args) {
   int argc = static_cast<int>(args->size());
@@ -29,7 +33,7 @@ void ParseArgs(std::vector<std::string>* args) {
   }
 
   char** argv = argvs.data();
-  
+
 
 }
 
@@ -37,10 +41,15 @@ void SetUp(App::Settings* settings) {
   std::vector<std::string> args = settings->getCommandLineArgs();
   ParseArgs(&args);
 
-  settings->setWindowSize(kWidth, kHeight);
+  const int width = static_cast<int>(FLAGS_width * FLAGS_tilesize);
+  const int height = static_cast<int>(FLAGS_height * FLAGS_tilesize);
+
+  settings->setWindowSize(width, height);
+  settings->setResizable(false);
   settings->setTitle("My CS 126 Application");
 
-
+  // Not sure what this does
+  std::srand(std::time(0));
 }
 
 }  // namespace myapp
