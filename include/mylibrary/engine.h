@@ -10,6 +10,7 @@
 #include <cinder/Vector.h>
 
 #include "direction.h"
+#include "map.h"
 #include "pacman.h"
 
 #include <vector>
@@ -38,9 +39,9 @@ class Engine {
  private:
   const size_t width;
   const size_t height;
-  PacMan pacman;
   Direction direction;
   Direction last_direction;
+  PacMan pacman;
 
   // Not sure what these do but they were in the Snake engine class
   std::mt19937 rng;

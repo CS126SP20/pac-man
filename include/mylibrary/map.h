@@ -16,14 +16,17 @@ constexpr int kMapWidth_int = static_cast<int>(kMapWidth);
 constexpr size_t kMapHeight = 36;
 constexpr int kMapHeight_int = static_cast<int>(kMapHeight);
 
+using std::string;
 using std::vector;
 
 class Map {
  public:
   Map();
 
+  void ParseFile(const string& file);
+
   void SetLayout(const vector<vector<char>>& given_layout);
-  vector<vector<char>> GetLayout();
+  vector<vector<char>> GetLayout() const;
 
  private:
   vector<vector<char>> layout;

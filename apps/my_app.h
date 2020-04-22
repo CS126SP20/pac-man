@@ -11,6 +11,7 @@
 #include <mylibrary/engine.h>
 #include <mylibrary/direction.h>
 #include <mylibrary/location.h>
+#include <mylibrary/map.h>
 
 namespace myapp {
 
@@ -23,10 +24,12 @@ class MyApp : public cinder::app::App {
   void keyDown(cinder::app::KeyEvent) override;
 
  private:
+  void DrawBackground() const;
   void DrawPacMan() const;
 
  private:
   myapp::Engine engine;
+  myapp::Map map;
   cinder::gl::Texture2dRef pac_man_image;
   const size_t tile_size;
   std::chrono::time_point<std::chrono::system_clock> last_time;

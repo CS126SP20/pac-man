@@ -16,7 +16,7 @@ namespace myapp {
 
 DEFINE_uint32(width, 28, "the number of tiles in a row");
 DEFINE_uint32(height, 36, "the number of tiles in a column");
-DEFINE_uint32(tilesize, 22, "the size of each tile");
+DEFINE_uint32(tilesize, 20, "the size of each tile");
 DEFINE_uint32(speed, 50, "the speed (delay) of the game");
 
 std::string file_name = "/Users/bzhang/Downloads/cinder_0.9.2_mac/my-projects/final-project-bzhang33/tests/data/standard_map";

@@ -14,9 +14,11 @@ using cinder::ColorA;
 using cinder::Rectf;
 using myapp::Direction;
 using myapp::Location;
+using myapp::Map;
 using std::chrono::duration_cast;
 using std::chrono::seconds;
 using std::chrono::system_clock;
+using std::vector;
 
 DECLARE_uint32(width);
 DECLARE_uint32(height);
@@ -26,11 +28,14 @@ DECLARE_string(map_file);
 
 MyApp::MyApp()
     : engine{FLAGS_width, FLAGS_height},
+      map{},
       tile_size(FLAGS_tilesize) {}
 
 void MyApp::setup() {
   pac_man_image = cinder::gl::Texture::create(
       loadImage(loadAsset("primitive-pac-man.png")));
+
+  map.ParseFile(FLAGS_map_file);
 
   cinder::gl::enableDepthWrite();
   cinder::gl::enableDepthRead();
@@ -55,7 +60,34 @@ void MyApp::draw() {
   cinder::gl::disableDepthWrite();
 
   cinder::gl::clear();
+  DrawBackground();
   DrawPacMan();
+}
+
+void MyApp::DrawBackground() const {
+  vector<vector<char>> layout = map.GetLayout();
+
+  for (int i = 3; i < FLAGS_height - 1; i++) {
+    for (int j = 0; j < FLAGS_width; j++) {
+      char c = layout[i][j];
+      Location loc(j, i);
+
+      if (c == '#') {
+        //cinder::gl::drawSolidRect(Rectf(100, 200, 200, 300));
+
+        cinder::gl::drawSolidRect(Rectf(tile_size * loc.Row(),
+                                        tile_size * loc.Col(),
+                                        tile_size * loc.Row() + tile_size,
+                                        tile_size * loc.Col() + tile_size));
+
+      } else if (c == '-') {
+
+      } else if (c == '&') {
+
+      }
+    }
+  }
+
 }
 
 void MyApp::DrawPacMan() const {
