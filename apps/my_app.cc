@@ -13,6 +13,9 @@ using cinder::ColorA;
 using cinder::Rectf;
 using myapp::Direction;
 using myapp::Location;
+using std::chrono::duration_cast;
+using std::chrono::seconds;
+using std::chrono::system_clock;
 
 MyApp::MyApp()
     : engine{28, 36},
@@ -26,7 +29,17 @@ void MyApp::setup() {
   cinder::gl::enableDepthRead();
 }
 
-void MyApp::update() {}
+void MyApp::update() {
+
+  const auto time = system_clock::now();
+
+  // The constant is speed_; need to add GFLAGS later / make const variable
+  if (time - last_time > std::chrono::milliseconds(50)) {
+    engine.Step();
+    last_time = time;
+  }
+
+}
 
 void MyApp::draw() {
   cinder::gl::enableAlphaBlending();
@@ -34,6 +47,7 @@ void MyApp::draw() {
   cinder::gl::disableDepthRead();
   cinder::gl::disableDepthWrite();
 
+  cinder::gl::clear();
   DrawPacMan();
 }
 

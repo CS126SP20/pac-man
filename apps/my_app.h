@@ -28,6 +28,7 @@ class MyApp : public cinder::app::App {
   myapp::Engine engine;
   cinder::gl::Texture2dRef pac_man_image;
   const size_t tile_size;
+  std::chrono::time_point<std::chrono::system_clock> last_time;
 };
 
 }  // namespace myapp

@@ -1,3 +1,5 @@
+#pragma clang diagnostic push
+#pragma ide diagnostic ignored "modernize-use-trailing-return-type"
 //
 // Created by Brianna Zhang on 4/21/20.
 //
@@ -29,3 +31,5 @@ class PacMan {
 
 
 #endif  // FINALPROJECT_PACMAN_H
+
+#pragma clang diagnostic pop

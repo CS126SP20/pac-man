@@ -25,10 +25,15 @@ class Engine {
 
   Engine(size_t given_width, size_t given_height, unsigned seed);
 
+  void Step();
+
   // Changes the direction of the snake for the next time step.
   void SetDirection(const Direction given_direction);
 
   PacMan GetPacMan() const;
+
+ private:
+  Location GetRandomLocation();
 
  private:
   const size_t width;
