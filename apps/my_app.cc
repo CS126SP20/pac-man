@@ -32,14 +32,28 @@ MyApp::MyApp()
       tile_size(FLAGS_tilesize) {}
 
 void MyApp::setup() {
-  pac_man_image = cinder::gl::Texture::create(
-      loadImage(loadAsset("primitive-pac-man.png")));
+  //using cinder::gl;
 
-  gate_image = cinder::gl::Texture::create(
-      loadImage(loadAsset("cyan_gate_block.png")));
+  pac_man_image = cinder::gl::Texture::create(loadImage(
+      loadAsset("primitive-pac-man.png")));
 
-  wall_image = cinder::gl::Texture::create(
-      loadImage(loadAsset("blue_wall_block.png")));
+  ghost_images.push_back(cinder::gl::Texture::create(loadImage(
+      loadAsset("inky.png"))));
+
+  ghost_images.push_back(cinder::gl::Texture::create(loadImage(
+      loadAsset("blinky.png"))));
+
+  ghost_images.push_back(cinder::gl::Texture::create(loadImage(
+      loadAsset("pinky.png"))));
+
+  ghost_images.push_back(cinder::gl::Texture::create(loadImage(
+      loadAsset("clyde.png"))));
+
+  gate_image = cinder::gl::Texture::create(loadImage(
+          loadAsset("cyan_gate_block.png")));
+
+  wall_image = cinder::gl::Texture::create(loadImage(
+      loadAsset("blue_wall_block.png")));
 
   map.ParseFile(FLAGS_map_file);
   engine.SetMap(map);
@@ -69,6 +83,7 @@ void MyApp::draw() {
   cinder::gl::clear();
   DrawBackground();
   DrawPacMan();
+  DrawGhosts();
 }
 
 void MyApp::DrawBackground() const {
@@ -104,6 +119,21 @@ void MyApp::DrawPacMan() const {
                                         tile_size * loc.Row() + tile_size,
                                         tile_size * loc.Col() + tile_size));
   const cinder::vec2 center = getWindowCenter();
+}
+
+void MyApp::DrawGhosts() const {
+  vector<Ghost> ghosts = engine.GetGhosts();
+
+  for (int i = 0; i < 4; i++) {
+    const Location loc = ghosts.at(i).GetLocation();
+
+    cinder::gl::draw(ghost_images.at(i),
+                     Rectf(tile_size * loc.Row(),
+                           tile_size * loc.Col(),
+                           tile_size * loc.Row() + tile_size,
+                           tile_size * loc.Col() + tile_size));
+    const cinder::vec2 center = getWindowCenter();
+  }
 }
 
 void MyApp::keyDown(KeyEvent event) {

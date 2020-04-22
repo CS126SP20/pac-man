@@ -7,7 +7,7 @@
 namespace myapp {
 
 Ghost::Ghost(const Location& given_location)
-    : location{given_location};
+    : location{given_location} {};
 
 Location Ghost::GetLocation() const { return location; }
 

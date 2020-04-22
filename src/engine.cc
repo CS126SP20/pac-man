@@ -27,18 +27,23 @@ Location FromDirection(const Direction direction) {
 
 PacMan Engine::GetPacMan() const { return pacman; }
 
+vector<Ghost> Engine::GetGhosts() const { return ghosts; }
+
 Engine::Engine(size_t given_width, size_t given_height)
   : Engine{given_width, given_height, static_cast<unsigned>(std::rand())} {}
 
 Engine::Engine(size_t given_width, size_t given_height, unsigned int seed)
-    : width{given_width},
-      height{given_height},
-      direction{Direction::kRight},
-      last_direction{Direction::kUp},
-      pacman{kStartLoc},
+    : width{given_width}, height{given_height},
+      direction{Direction::kRight}, last_direction{Direction::kUp},
+      pacman{kStartLocPacMan},
       map{},
       rng{seed},
-      uniform{0, 1} {}
+      uniform{0, 1} {
+
+  for (int i = 0; i < 4; i++) {
+    ghosts.emplace_back(kStartLocGhost + Location(i, 0));
+  }
+}
 
 void Engine::Step() {
   if (!IsValidDirection(direction)) {

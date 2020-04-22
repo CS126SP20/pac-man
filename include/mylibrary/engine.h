@@ -10,6 +10,7 @@
 #include <cinder/Vector.h>
 
 #include "direction.h"
+#include "ghost.h"
 #include "map.h"
 #include "pacman.h"
 
@@ -18,7 +19,8 @@
 namespace myapp {
 
 using cinder::app::KeyEvent;
-const Location kStartLoc{14, 26};
+const Location kStartLocPacMan{14, 26};
+const Location kStartLocGhost{12, 17};
 
 class Engine {
  public:
@@ -35,11 +37,12 @@ class Engine {
 
   PacMan GetPacMan() const;
 
+  std::vector<Ghost> GetGhosts() const;
+
   bool IsValidDirection(Direction);
 
  private:
   Location GetRandomLocation();
-
 
  private:
   const size_t width;
@@ -48,6 +51,7 @@ class Engine {
   Direction last_direction;
   Map map;
   PacMan pacman;
+  std::vector<Ghost> ghosts;
 
   // Not sure what these do but they were in the Snake engine class
   std::mt19937 rng;
