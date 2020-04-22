@@ -18,7 +18,7 @@
 namespace myapp {
 
 using cinder::app::KeyEvent;
-const Location kStartLoc{14, 18};
+const Location kStartLoc{14, 26};
 
 class Engine {
  public:
@@ -31,16 +31,22 @@ class Engine {
   // Changes the direction of the snake for the next time step.
   void SetDirection(const Direction given_direction);
 
+  void SetMap(const Map given_map);
+
   PacMan GetPacMan() const;
+
+  bool IsValidDirection(Direction);
 
  private:
   Location GetRandomLocation();
+
 
  private:
   const size_t width;
   const size_t height;
   Direction direction;
   Direction last_direction;
+  Map map;
   PacMan pacman;
 
   // Not sure what these do but they were in the Snake engine class

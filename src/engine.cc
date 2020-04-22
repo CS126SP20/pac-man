@@ -36,18 +36,41 @@ Engine::Engine(size_t given_width, size_t given_height, unsigned int seed)
       direction{Direction::kRight},
       last_direction{Direction::kUp},
       pacman{kStartLoc},
+      map{},
       rng{seed},
       uniform{0, 1} {}
 
 void Engine::Step() {
-  Location d_loc = FromDirection(direction);
+  if (!IsValidDirection(direction)) {
+    direction = last_direction;
+  }
+
   Location curr_loc = pacman.GetLocation();
-  pacman.SetLocation((curr_loc + d_loc) % Location(width, height)) ;
-  last_direction = direction;
+  Location d_loc = FromDirection(direction);
+  Location target_loc = ((curr_loc + d_loc)) % Location(width, height);
+
+  char c = map.GetLayout()[target_loc.Col()][target_loc.Row()];
+  if (c != '#' && c != '&' && c != '?') {
+    pacman.SetLocation(target_loc);
+    last_direction = direction;
+  }
 }
 
 void Engine::SetDirection(const myapp::Direction given_direction) {
   direction = given_direction;
+}
+
+void Engine::SetMap(const Map given_map) {
+  map = given_map;
+}
+
+bool Engine::IsValidDirection(Direction) {
+  Location curr_loc = pacman.GetLocation();
+  Location d_loc = FromDirection(direction);
+  Location target_loc = (curr_loc + d_loc) % Location(width, height);
+
+  char c = map.GetLayout()[target_loc.Col()][target_loc.Row()];
+  return !(c == '#' || c == '&' || c == '?');
 }
 
 // Retrieves a random location not occupied by PacMan.
@@ -65,7 +88,6 @@ Location Engine::GetRandomLocation() {\
       }
     }
   }
-
   return final_location;
 }
 }

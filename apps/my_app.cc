@@ -42,6 +42,7 @@ void MyApp::setup() {
       loadImage(loadAsset("blue_wall_block.png")));
 
   map.ParseFile(FLAGS_map_file);
+  engine.SetMap(map);
 
   cinder::gl::enableDepthWrite();
   cinder::gl::enableDepthRead();

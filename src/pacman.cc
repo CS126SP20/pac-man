@@ -1,3 +1,5 @@
+#pragma clang diagnostic push
+#pragma ide diagnostic ignored "modernize-use-trailing-return-type"
 //
 // Created by Brianna Zhang on 4/21/20.
 //
@@ -15,3 +17,4 @@ Location PacMan::SetLocation(const myapp::Location& given_location) {
   return location;
 }
 }
+#pragma clang diagnostic pop
