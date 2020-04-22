@@ -1,0 +1,8 @@
+//
+// Created by Brianna Zhang on 4/21/20.
+//
+
+#ifndef FINALPROJECT_FILEMANAGER_H
+#define FINALPROJECT_FILEMANAGER_H
+
+#endif  // FINALPROJECT_FILEMANAGER_H
