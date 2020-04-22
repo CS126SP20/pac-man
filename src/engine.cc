@@ -50,8 +50,7 @@ void Engine::SetDirection(const myapp::Direction given_direction) {
   direction = given_direction;
 }
 
-
-// Retrieves a random location not occupied by the snake.
+// Retrieves a random location not occupied by PacMan.
 // This method uses Reservoir sampling.
 Location Engine::GetRandomLocation() {\
   int num_open = 0;
