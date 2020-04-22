@@ -6,8 +6,7 @@
 
 namespace myapp {
 PacMan::PacMan(const Location& given_location)
-    : location{given_location},
-      consumed_power_food{false} {}
+    : location{given_location} {}
 
 Location PacMan::GetLocation() const { return location; }
 
@@ -15,13 +14,4 @@ Location PacMan::SetLocation(const myapp::Location& given_location) {
   location = given_location;
   return location;
 }
-
-void PacMan::SetVisibility(bool visibility) { visible = visibility; }
-
-bool PacMan::IsVisible() const { return visible; }
-
-bool PacMan::HasConsumedPowerFood(bool update) {
-  consumed_power_food = update;
-}
-
 }
