@@ -35,6 +35,9 @@ void MyApp::setup() {
   pac_man_image = cinder::gl::Texture::create(
       loadImage(loadAsset("primitive-pac-man.png")));
 
+  wall_image = cinder::gl::Texture::create(
+      loadImage(loadAsset("blue_wall_block.png")));
+
   map.ParseFile(FLAGS_map_file);
 
   cinder::gl::enableDepthWrite();
@@ -73,9 +76,7 @@ void MyApp::DrawBackground() const {
       Location loc(j, i);
 
       if (c == '#') {
-        //cinder::gl::drawSolidRect(Rectf(100, 200, 200, 300));
-
-        cinder::gl::drawSolidRect(Rectf(tile_size * loc.Row(),
+        cinder::gl::draw(wall_image,Rectf(tile_size * loc.Row(),
                                         tile_size * loc.Col(),
                                         tile_size * loc.Row() + tile_size,
                                         tile_size * loc.Col() + tile_size));

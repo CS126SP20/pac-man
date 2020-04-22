@@ -30,9 +30,11 @@ class MyApp : public cinder::app::App {
  private:
   myapp::Engine engine;
   myapp::Map map;
-  cinder::gl::Texture2dRef pac_man_image;
   const size_t tile_size;
   std::chrono::time_point<std::chrono::system_clock> last_time;
+
+  cinder::gl::Texture2dRef pac_man_image;
+  cinder::gl::Texture2dRef wall_image;
 };
 
 }  // namespace myapp
