@@ -7,6 +7,7 @@
 #include <mylibrary/pacman.h>
 
 namespace myapp {
+
 PacMan::PacMan(const Location& given_location)
     : location{given_location} {}
 

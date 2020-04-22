@@ -1,3 +1,5 @@
+#pragma clang diagnostic push
+#pragma ide diagnostic ignored "modernize-use-trailing-return-type"
 //
 // Created by Brianna Zhang on 4/21/20.
 //
@@ -69,3 +71,5 @@ std::ostream& operator<<(std::ostream& os, const Location& location) {
 }
 
 }
+
+#pragma clang diagnostic pop

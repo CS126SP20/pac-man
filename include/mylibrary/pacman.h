@@ -16,7 +16,7 @@ class PacMan {
   explicit PacMan(const Location& given_location);
 
   Location GetLocation() const;
-  Location SetLocation(const Location& location);
+  Location SetLocation(const Location& given_location);
 
  private:
   Location location;
