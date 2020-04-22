@@ -35,6 +35,9 @@ void MyApp::setup() {
   pac_man_image = cinder::gl::Texture::create(
       loadImage(loadAsset("primitive-pac-man.png")));
 
+  gate_image = cinder::gl::Texture::create(
+      loadImage(loadAsset("cyan_gate_block.png")));
+
   wall_image = cinder::gl::Texture::create(
       loadImage(loadAsset("blue_wall_block.png")));
 
@@ -81,14 +84,14 @@ void MyApp::DrawBackground() const {
                                         tile_size * loc.Row() + tile_size,
                                         tile_size * loc.Col() + tile_size));
 
-      } else if (c == '-') {
-
       } else if (c == '&') {
-
+        cinder::gl::draw(gate_image, Rectf(tile_size * loc.Row(),
+                                          tile_size * loc.Col(),
+                                          tile_size * loc.Row() + tile_size,
+                                          tile_size * loc.Col() + tile_size));
       }
     }
   }
-
 }
 
 void MyApp::DrawPacMan() const {

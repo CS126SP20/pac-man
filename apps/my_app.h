@@ -34,6 +34,7 @@ class MyApp : public cinder::app::App {
   std::chrono::time_point<std::chrono::system_clock> last_time;
 
   cinder::gl::Texture2dRef pac_man_image;
+  cinder::gl::Texture2dRef gate_image;
   cinder::gl::Texture2dRef wall_image;
 };
 
