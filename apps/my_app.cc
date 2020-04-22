@@ -3,38 +3,50 @@
 #include "my_app.h"
 
 #include <cinder/app/App.h>
-
-using namespace myapp;
+#include <cinder/Vector.h>
 
 namespace myapp {
 
 using cinder::app::KeyEvent;
+using cinder::Color;
+using cinder::ColorA;
+using cinder::Rectf;
+using myapp::Direction;
+using myapp::Location;
 
 MyApp::MyApp()
-    : engine{28, 36} {}
+    : engine{28, 36},
+      tile_size(22) {}
 
 void MyApp::setup() {
-  pac_man_image = cinder::gl::Texture::create(loadImage(loadAsset("primitive-pac-man.png")));
+  pac_man_image = cinder::gl::Texture::create(
+      loadImage(loadAsset("primitive-pac-man.png")));
 
   cinder::gl::enableDepthWrite();
   cinder::gl::enableDepthRead();
 }
 
-void MyApp::update() { }
+void MyApp::update() {}
 
 void MyApp::draw() {
   cinder::gl::enableAlphaBlending();
 
-  cinder::gl::clear();
-  cinder::gl::draw(pac_man_image, getWindowBounds());
+  cinder::gl::disableDepthRead();
+  cinder::gl::disableDepthWrite();
 
+  DrawPacMan();
 }
 
 void MyApp::DrawPacMan() const {
+  PacMan pacman = engine.GetPacMan();
+  const Location loc = pacman.GetLocation();
 
+  cinder::gl::draw(pac_man_image, Rectf(tile_size * loc.Row(),
+                                        tile_size * loc.Col(),
+                                        tile_size * loc.Row() + tile_size,
+                                        tile_size * loc.Col() + tile_size));
+  const cinder::vec2 center = getWindowCenter();
 }
-
-
 
 void MyApp::keyDown(KeyEvent event) {
   switch (event.getCode()) {

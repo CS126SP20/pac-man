@@ -42,6 +42,6 @@ class Location {
 
 std::ostream& operator<<(std::ostream& os, const Location& location);
 
-} // namespace myapp;
+} // namespace myapp
 
 #endif  // FINALPROJECT_LOCATION_H

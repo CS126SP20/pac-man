@@ -8,6 +8,8 @@
 #include <cinder/gl/Texture.h>
 
 #include <mylibrary/engine.h>
+#include <mylibrary/direction.h>
+#include <mylibrary/location.h>
 
 namespace myapp {
 
@@ -25,6 +27,7 @@ class MyApp : public cinder::app::App {
  private:
   myapp::Engine engine;
   cinder::gl::Texture2dRef pac_man_image;
+  const size_t tile_size;
 };
 
 }  // namespace myapp

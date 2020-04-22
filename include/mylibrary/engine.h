@@ -6,10 +6,18 @@
 #define FINALPROJECT_ENGINE_H
 
 #include <random>
+#include <cinder/app/App.h>
+#include <cinder/Vector.h>
 
 #include "direction.h"
+#include "pacman.h"
+
+#include <vector>
 
 namespace myapp {
+
+using cinder::app::KeyEvent;
+const Location kStartLoc{14, 18};
 
 class Engine {
  public:
@@ -20,9 +28,12 @@ class Engine {
   // Changes the direction of the snake for the next time step.
   void SetDirection(const Direction given_direction);
 
+  PacMan GetPacMan() const;
+
  private:
   const size_t width;
   const size_t height;
+  PacMan pacman;
   Direction direction;
   Direction last_direction;
 

@@ -11,10 +11,15 @@ namespace myapp {
   Engine::Engine(size_t given_width, size_t given_height, unsigned int seed)
       : width{given_width},
         height{given_height},
+        pacman{kStartLoc},
         rng{seed},
         uniform{0, 1} {}
 
   void Engine::SetDirection(const myapp::Direction given_direction) {
     direction = given_direction;
+  }
+
+  PacMan Engine::GetPacMan() const {
+    return pacman;
   }
 }
