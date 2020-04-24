@@ -10,6 +10,11 @@
     however, logic for collisions and movement restriction has not been added yet
     
 - **4/22/20**
-    - Hello
+    - Added logic: PacMan now moves with constraints; can only move
+    within the walls of the maze
+    - Added a Ghost class and implemented images for each ghost
+    
+- **4/23/20**
+    - 
 
 ---

@@ -3,6 +3,8 @@
 #include "my_app.h"
 
 #include <cinder/app/App.h>
+#include <cinder/Font.h>
+#include <cinder/Text.h>
 #include <cinder/Vector.h>
 #include <gflags/gflags.h>
 
@@ -12,13 +14,17 @@ using cinder::app::KeyEvent;
 using cinder::Color;
 using cinder::ColorA;
 using cinder::Rectf;
+using cinder::TextBox;
 using myapp::Direction;
 using myapp::Location;
-using myapp::Map;
 using std::chrono::duration_cast;
 using std::chrono::seconds;
 using std::chrono::system_clock;
 using std::vector;
+
+const char kNormalFont[] = "Arial";
+const char kBoldFont[] = "Arial Bold";
+const char kDifferentFont[] = "Papyrus";
 
 DECLARE_uint32(width);
 DECLARE_uint32(height);
@@ -29,11 +35,10 @@ DECLARE_string(map_file);
 MyApp::MyApp()
     : engine{FLAGS_width, FLAGS_height},
       map{},
-      tile_size(FLAGS_tilesize) {}
+      tile_size(FLAGS_tilesize),
+      game_started{false} {}
 
 void MyApp::setup() {
-  //using cinder::gl;
-
   pac_man_image = cinder::gl::Texture::create(loadImage(
       loadAsset("primitive-pac-man.png")));
 
@@ -63,7 +68,6 @@ void MyApp::setup() {
 }
 
 void MyApp::update() {
-
   const auto time = system_clock::now();
 
   // The constant is speed_; need to add GFLAGS later / make const variable
@@ -71,7 +75,6 @@ void MyApp::update() {
     engine.Step();
     last_time = time;
   }
-
 }
 
 void MyApp::draw() {
@@ -82,8 +85,33 @@ void MyApp::draw() {
 
   cinder::gl::clear();
   DrawBackground();
+
   DrawPacMan();
   DrawGhosts();
+
+  /*
+  if (!game_started) {
+    DrawPreGame();
+  }*/
+}
+
+void PrintText(const string& text, const Color& color, const cinder::ivec2& size,
+               const cinder::vec2& loc) {
+  cinder::gl::color(color);
+
+  auto box = TextBox()
+      .alignment(TextBox::CENTER)
+      .font(cinder::Font(kDifferentFont, 30))
+      .size(size)
+      .color(color)
+      .backgroundColor(ColorA(0, 0, 0, 0))
+      .text(text);
+
+  const auto box_size = box.getSize();
+  const cinder::vec2 locp = {loc.x - box_size.x / 2, loc.y - box_size.y / 2};
+  const auto surface = box.render();
+  const auto texture = cinder::gl::Texture::create(surface);
+  cinder::gl::draw(texture, locp);
 }
 
 void MyApp::DrawBackground() const {
@@ -108,6 +136,14 @@ void MyApp::DrawBackground() const {
       }
     }
   }
+}
+
+void MyApp::DrawPreGame() const {
+  const cinder::ivec2 size = {500, 50};
+  const Color color = Color::white();
+  const Location loc((FLAGS_width / 2) * tile_size, (FLAGS_height / 2) * tile_size);
+
+  //PrintText("Press SPACE to begin", color, size, loc);
 }
 
 void MyApp::DrawPacMan() const {
@@ -141,25 +177,25 @@ void MyApp::keyDown(KeyEvent event) {
     case KeyEvent::KEY_UP:
     case KeyEvent::KEY_k:
     case KeyEvent::KEY_w: {
-      engine.SetDirection(Direction::kLeft);
+      engine.SetPMDirection(Direction::kLeft);
       break;
     }
     case KeyEvent::KEY_DOWN:
     case KeyEvent::KEY_j:
     case KeyEvent::KEY_s: {
-      engine.SetDirection(Direction::kRight);
+      engine.SetPMDirection(Direction::kRight);
       break;
     }
     case KeyEvent::KEY_LEFT:
     case KeyEvent::KEY_h:
     case KeyEvent::KEY_a: {
-      engine.SetDirection(Direction::kUp);
+      engine.SetPMDirection(Direction::kUp);
       break;
     }
     case KeyEvent::KEY_RIGHT:
     case KeyEvent::KEY_l:
     case KeyEvent::KEY_d: {
-      engine.SetDirection(Direction::kDown);
+      engine.SetPMDirection(Direction::kDown);
       break;
     }
   }

@@ -9,7 +9,22 @@
 namespace myapp {
 
 PacMan::PacMan(const Location& given_location)
-    : location{given_location} {}
+    : location{given_location},
+      direction{Direction::kRight}, last_direction{Direction::kUp} {}
+
+Direction PacMan::GetDirection() const { return direction; }
+
+Direction PacMan::SetDirection(const myapp::Direction& given_direction) {
+  direction = given_direction;
+  return direction;
+}
+
+Direction PacMan::GetLastDirection() const { return last_direction; }
+
+Direction PacMan::SetLastDirection(const myapp::Direction& given_direction) {
+  last_direction = given_direction;
+  return last_direction;
+}
 
 Location PacMan::GetLocation() const { return location; }
 

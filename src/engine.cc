@@ -1,8 +1,9 @@
+#pragma clang diagnostic push
+#pragma ide diagnostic ignored "modernize-use-trailing-return-type"
 //
 // Created by Brianna Zhang on 4/21/20.
 //
 
-#include <set>
 #include <stdexcept>
 
 #include <mylibrary/engine.h>
@@ -25,74 +26,75 @@ Location FromDirection(const Direction direction) {
   throw std::out_of_range("switch statement not matched");
 }
 
+// Determines if the given directions are complementary.
+bool IsOpposite(const Direction lhs, const Direction rhs) {
+  return ((lhs == Direction::kUp && rhs == Direction::kDown) ||
+          (lhs == Direction::kDown && rhs == Direction::kUp) ||
+          (lhs == Direction::kLeft && rhs == Direction::kRight) ||
+          (lhs == Direction::kRight && rhs == Direction::kLeft));
+}
+
 PacMan Engine::GetPacMan() const { return pacman; }
 
 vector<Ghost> Engine::GetGhosts() const { return ghosts; }
 
 Engine::Engine(size_t given_width, size_t given_height)
-  : Engine{given_width, given_height, static_cast<unsigned>(std::rand())} {}
+    : Engine{given_width, given_height, static_cast<unsigned>(std::rand())} {}
 
-Engine::Engine(size_t given_width, size_t given_height, unsigned int seed)
+Engine::Engine(size_t given_width, size_t given_height, unsigned seed)
     : width{given_width}, height{given_height},
-      direction{Direction::kRight}, last_direction{Direction::kUp},
       pacman{kStartLocPacMan},
       map{},
-      rng{seed},
-      uniform{0, 1} {
+      rng{seed} {
 
-  for (int i = 0; i < 4; i++) {
+  for (int i = 0; i < kNumGhosts; i++) {
     ghosts.emplace_back(kStartLocGhost + Location(i, 0));
   }
 }
 
 void Engine::Step() {
-  if (!IsValidDirection(direction)) {
-    direction = last_direction;
+  Direction pm_curr_d = pacman.GetDirection();
+
+  // If PM tries to move in an invalid direction, he doesn't stop and keeps
+  // moving in the same direction he was moving
+  if (!IsValidDirection(pm_curr_d)) {
+    Direction last_direction = pacman.GetLastDirection();
+    pacman.SetDirection(last_direction);
   }
 
-  Location curr_loc = pacman.GetLocation();
-  Location d_loc = FromDirection(direction);
-  Location target_loc = ((curr_loc + d_loc)) % Location(width, height);
+  Location pm_curr_loc = pacman.GetLocation();
+  Location pm_d_loc = FromDirection(pm_curr_d);
+  Location pm_target_loc = ((pm_curr_loc + pm_d_loc)) % Location(width, height);
 
-  char c = map.GetLayout()[target_loc.Col()][target_loc.Row()];
+  // Changes Pac-Man's location
+  char c = map.GetLayout()[pm_target_loc.Col()][pm_target_loc.Row()];
   if (c != '#' && c != '&' && c != '?') {
-    pacman.SetLocation(target_loc);
-    last_direction = direction;
+    pacman.SetLocation(pm_target_loc);
+    pacman.SetLastDirection(pm_curr_d);
   }
+
+  Ghost g1 = ghosts.at(0);
+
+
 }
 
-void Engine::SetDirection(const myapp::Direction given_direction) {
-  direction = given_direction;
-}
-
-void Engine::SetMap(const Map given_map) {
+void Engine::SetMap(const Map& given_map) {
   map = given_map;
+}
+
+Direction Engine::SetPMDirection(const Direction& given_direction) {
+  pacman.SetLastDirection(pacman.GetDirection());
+  pacman.SetDirection(given_direction);
 }
 
 bool Engine::IsValidDirection(Direction) {
   Location curr_loc = pacman.GetLocation();
-  Location d_loc = FromDirection(direction);
+  Location d_loc = FromDirection(pacman.GetDirection());
   Location target_loc = (curr_loc + d_loc) % Location(width, height);
 
   char c = map.GetLayout()[target_loc.Col()][target_loc.Row()];
   return !(c == '#' || c == '&' || c == '?');
 }
-
-// Retrieves a random location not occupied by PacMan.
-// This method uses Reservoir sampling.
-Location Engine::GetRandomLocation() {\
-  int num_open = 0;
-  Location final_location(0, 0);
-
-  for (size_t row = 0; row < height; ++row) {
-    for (size_t col = 0; col < width; ++col) {
-      Location loc(row, col);
-
-      if (uniform(rng) <= 1./(++num_open)) {
-        final_location = loc;
-      }
-    }
-  }
-  return final_location;
 }
-}
+
+#pragma clang diagnostic pop

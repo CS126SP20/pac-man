@@ -21,6 +21,7 @@ namespace myapp {
 using cinder::app::KeyEvent;
 const Location kStartLocPacMan{14, 26};
 const Location kStartLocGhost{12, 17};
+const size_t kNumGhosts = 4;
 
 class Engine {
  public:
@@ -30,33 +31,23 @@ class Engine {
 
   void Step();
 
-  // Changes the direction of the snake for the next time step.
-  void SetDirection(const Direction given_direction);
-
-  void SetMap(const Map given_map);
+  void SetMap(const Map& given_map);
 
   PacMan GetPacMan() const;
 
   std::vector<Ghost> GetGhosts() const;
 
-  bool IsValidDirection(Direction);
+  Direction SetPMDirection(const Direction& given_direction);
 
- private:
-  Location GetRandomLocation();
+  bool IsValidDirection(Direction);
 
  private:
   const size_t width;
   const size_t height;
-  Direction direction;
-  Direction last_direction;
   Map map;
   PacMan pacman;
   std::vector<Ghost> ghosts;
-
-  // Not sure what these do but they were in the Snake engine class
   std::mt19937 rng;
-  std::uniform_real_distribution<double> uniform;
-
 };
 
 }

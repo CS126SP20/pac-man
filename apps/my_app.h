@@ -25,6 +25,7 @@ class MyApp : public cinder::app::App {
 
  private:
   void DrawBackground() const;
+  void DrawPreGame() const;
   void DrawPacMan() const;
   void DrawGhosts() const;
 
@@ -32,6 +33,7 @@ class MyApp : public cinder::app::App {
   myapp::Engine engine;
   myapp::Map map;
   const size_t tile_size;
+  bool game_started;
   std::chrono::time_point<std::chrono::system_clock> last_time;
 
   cinder::gl::Texture2dRef pac_man_image;
