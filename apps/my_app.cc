@@ -133,6 +133,11 @@ void MyApp::DrawBackground() const {
                                           tile_size * loc.Col(),
                                           tile_size * loc.Row() + tile_size,
                                           tile_size * loc.Col() + tile_size));
+      } else if (c == '.') {
+        const cinder::vec2 center = {(loc.Row() * tile_size) + (tile_size / 2),
+                                     (loc.Col() * tile_size) + (tile_size / 2)};
+        cinder::gl::color(1, 0.8, 0.6); 
+        cinder::gl::drawSolidCircle(center, 2, -1);
       }
     }
   }
