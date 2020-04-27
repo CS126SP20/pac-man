@@ -7,12 +7,21 @@
 namespace myapp {
 
 Ghost::Ghost(const Location& given_location)
-    : location{given_location} {};
+    : location{given_location},
+      direction{Direction::kRight} {}
+
+Direction Ghost::GetDirection() const { return direction; }
+
+Direction Ghost::SetDirection(const myapp::Direction& given_direction) {
+  direction = given_direction;
+  return direction;
+}
 
 Location Ghost::GetLocation() const { return location; }
 
-void Ghost::SetLocation(const Location &given_location) {
+Location Ghost::SetLocation(const myapp::Location &given_location) {
   location = given_location;
+  return location;
 }
 
 }

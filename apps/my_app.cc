@@ -117,26 +117,30 @@ void PrintText(const string& text, const Color& color, const cinder::ivec2& size
 void MyApp::DrawBackground() const {
   vector<vector<char>> layout = map.GetLayout();
 
-  for (int i = 3; i < FLAGS_height - 1; i++) {
-    for (int j = 0; j < FLAGS_width; j++) {
-      char c = layout[i][j];
-      Location loc(j, i);
+  for (int row = 3; row < FLAGS_width - 1; row++) {
+    for (int col = 0; col < FLAGS_height; col++) {
+      char c = layout[row][col];
+      Location loc(col, row);
 
       if (c == '#') {
+        // Draws the walls
         cinder::gl::draw(wall_image,Rectf(tile_size * loc.Row(),
                                         tile_size * loc.Col(),
                                         tile_size * loc.Row() + tile_size,
                                         tile_size * loc.Col() + tile_size));
 
       } else if (c == '&') {
+        // Draws the gates that let the ghosts out
         cinder::gl::draw(gate_image, Rectf(tile_size * loc.Row(),
                                           tile_size * loc.Col(),
                                           tile_size * loc.Row() + tile_size,
                                           tile_size * loc.Col() + tile_size));
       } else if (c == '.') {
+        // Draws the food
         const cinder::vec2 center = {(loc.Row() * tile_size) + (tile_size / 2),
                                      (loc.Col() * tile_size) + (tile_size / 2)};
-        cinder::gl::color(1, 0.8, 0.6); 
+
+        //cinder::gl::color(1, 0.8, 0.6);
         cinder::gl::drawSolidCircle(center, 2, -1);
       }
     }
@@ -159,48 +163,40 @@ void MyApp::DrawPacMan() const {
                                         tile_size * loc.Col(),
                                         tile_size * loc.Row() + tile_size,
                                         tile_size * loc.Col() + tile_size));
-  const cinder::vec2 center = getWindowCenter();
+  //std::cout << loc << std::endl;
 }
 
 void MyApp::DrawGhosts() const {
   vector<Ghost> ghosts = engine.GetGhosts();
 
-  for (int i = 0; i < 4; i++) {
-    const Location loc = ghosts.at(i).GetLocation();
+  //for (int i = 0; i < 1; i++) {
+    const Location loc = ghosts.at(0).GetLocation();
+    std::cout << loc << std::endl;
 
-    cinder::gl::draw(ghost_images.at(i),
+    cinder::gl::draw(ghost_images.at(0),
                      Rectf(tile_size * loc.Row(),
                            tile_size * loc.Col(),
                            tile_size * loc.Row() + tile_size,
                            tile_size * loc.Col() + tile_size));
-    const cinder::vec2 center = getWindowCenter();
-  }
+  //}
 }
 
 void MyApp::keyDown(KeyEvent event) {
   switch (event.getCode()) {
-    case KeyEvent::KEY_UP:
-    case KeyEvent::KEY_k:
-    case KeyEvent::KEY_w: {
-      engine.SetPMDirection(Direction::kLeft);
-      break;
-    }
-    case KeyEvent::KEY_DOWN:
-    case KeyEvent::KEY_j:
-    case KeyEvent::KEY_s: {
-      engine.SetPMDirection(Direction::kRight);
-      break;
-    }
-    case KeyEvent::KEY_LEFT:
-    case KeyEvent::KEY_h:
-    case KeyEvent::KEY_a: {
+    case KeyEvent::KEY_UP: {
       engine.SetPMDirection(Direction::kUp);
       break;
     }
-    case KeyEvent::KEY_RIGHT:
-    case KeyEvent::KEY_l:
-    case KeyEvent::KEY_d: {
+    case KeyEvent::KEY_DOWN:{
       engine.SetPMDirection(Direction::kDown);
+      break;
+    }
+    case KeyEvent::KEY_LEFT:{
+      engine.SetPMDirection(Direction::kLeft);
+      break;
+    }
+    case KeyEvent::KEY_RIGHT:{
+      engine.SetPMDirection(Direction::kRight);
       break;
     }
   }

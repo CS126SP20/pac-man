@@ -5,6 +5,7 @@
 #ifndef FINALPROJECT_GHOST_H
 #define FINALPROJECT_GHOST_H
 
+#include "direction.h"
 #include "location.h"
 
 namespace myapp {
@@ -13,11 +14,15 @@ class Ghost {
  public:
   explicit Ghost(const Location& given_location);
 
+  Direction GetDirection() const;
+  Direction SetDirection(const Direction& given_direction);
+
   Location GetLocation() const;
-  void SetLocation(const Location& given_location);
+  Location SetLocation(const Location& given_location);
 
  private:
   Location location;
+  Direction direction;
 };
 }
 
