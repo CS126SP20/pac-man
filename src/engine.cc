@@ -49,7 +49,7 @@ Engine::Engine(size_t given_width, size_t given_height, unsigned seed)
       map{},
       rng{seed} {
 
-  for (int i = 0; i < 1; i++) {
+  for (int i = 0; i < kNumGhosts; i++) {
     Ghost ghost = Ghost(kStartLocGhost + Location(i, 0));
     ghosts.push_back(ghost);
   }
@@ -79,24 +79,33 @@ void Engine::StepPacMan() {
 }
 
 void Engine::StepGhosts() {
-  vector<Direction> poss_d = GetPossDirections(ghosts.at(0));
+  for (int i = 0; i < kNumGhosts; i++) {
+    vector<Direction> poss_d = GetPossDirections(ghosts.at(i));
 
-  Location curr_loc = ghosts.at(0).GetLocation();
-  Direction curr_d = ghosts.at(0).GetDirection();
+    Location curr_loc = ghosts.at(i).GetLocation();
+    Direction curr_d = ghosts.at(i).GetDirection();
 
-  // This means that the ghost is at an intersection
-  if (poss_d.size() == 1 || poss_d.size() == 2) {
-    // Assign a random direction with the directions that bring the ghost closer
-    // to Pac-Man having a higher probability of being selected
-    Direction new_d = SetRandDirection(poss_d, ghosts.at(0));
-    Location target_loc = GetTargetLoc(curr_loc, new_d);
+    // This means that the ghost is at an intersection
+    if (poss_d.size() == 1 || poss_d.size() == 2) {
+      poss_d.push_back(ghosts.at(i).GetDirection());
 
-    ghosts.at(0).SetLocation(target_loc);
+      // Assign a random direction
+      auto rand_index = rand() % (poss_d.size() - 1);
+      Direction new_d = poss_d.at(rand_index);
+      Location target_loc = GetTargetLoc(curr_loc, new_d);
 
-  } else {
-    // Continue to move in the same direction
-    Location target_loc = GetTargetLoc(curr_loc, curr_d);
-    ghosts.at(0).SetLocation(target_loc);
+      if (IsValidLocation(target_loc)) {
+        ghosts.at(i).SetLocation(target_loc);
+        ghosts.at(i).SetDirection(new_d);
+      }
+    } else {
+      // Continue to move in the same direction
+      Location target_loc = GetTargetLoc(curr_loc, curr_d);
+
+      if (IsValidLocation(target_loc)) {
+        ghosts.at(i).SetLocation(target_loc);
+      }
+    }
   }
 }
 
@@ -110,40 +119,14 @@ std::vector<Direction> Engine::GetPossDirections(Ghost ghost) {
 
   for (auto & direction : directions) {
     if (direction != curr_d && !(IsOpposite(direction, curr_d))) {
-
       Location target_loc = GetTargetLoc(curr_loc, direction);
+
       if (IsValidLocation(target_loc)) {
         poss_d.push_back(direction);
       }
     }
   }
   return poss_d;
-}
-
-Direction Engine::SetRandDirection(std::vector<Direction> &poss_d,
-                                   const Ghost &ghost) {
-  // Include the current direction in possible directions the ghost can move in
-  poss_d.push_back(ghost.GetDirection());
-  std::map<Direction, int> direction_weights;
-
-  std::vector<Direction> weighted_d;
-
-  Location pacman_loc = pacman.GetLocation();
-  Location ghost_loc = ghost.GetLocation();
-  double distance = FindDistance(pacman_loc, ghost_loc);
-
-  auto rand_int = rand() % poss_d.size();
-  return poss_d.at(rand_int);
-  //for (auto & i : poss_d) {
-  /*
-  Location ghost_target_loc = GetTargetLoc(ghost_loc, i, true);
-  double new_distance = FindDistance(pacman_loc, ghost_target_loc);
-
-  if (new_distance < distance) {
-    weighted_d.push_back(i);
-    return i;
-  }*/
-  //}
 }
 
 Location Engine::GetTargetLoc(const Location& curr_loc, const Direction& curr_d) {
@@ -163,16 +146,6 @@ void Engine::SetMap(const Map& given_map) {
 Direction Engine::SetPMDirection(const Direction& given_direction) {
   pacman.SetLastDirection(pacman.GetDirection());
   pacman.SetDirection(given_direction);
-}
-
-double Engine::FindDistance(const Location& curr_loc, const Location& target_loc) {
-  auto x1 = static_cast<double>(curr_loc.Row());
-  auto y1 = static_cast<double>(curr_loc.Col());
-
-  auto x2 = static_cast<double>(target_loc.Row());
-  auto y2 = static_cast<double>(target_loc.Col());
-
-  return sqrt(pow(2.0, (x2 - x1)) + pow(2.0, (y2 - y1)));
 }
 }
 

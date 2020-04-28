@@ -163,22 +163,20 @@ void MyApp::DrawPacMan() const {
                                         tile_size * loc.Col(),
                                         tile_size * loc.Row() + tile_size,
                                         tile_size * loc.Col() + tile_size));
-  //std::cout << loc << std::endl;
 }
 
 void MyApp::DrawGhosts() const {
   vector<Ghost> ghosts = engine.GetGhosts();
 
-  //for (int i = 0; i < 1; i++) {
-    const Location loc = ghosts.at(0).GetLocation();
-    std::cout << loc << std::endl;
+  for (int i = 0; i < kNumGhosts; i++) {
+    const Location loc = ghosts.at(i).GetLocation();
 
-    cinder::gl::draw(ghost_images.at(0),
+    cinder::gl::draw(ghost_images.at(i),
                      Rectf(tile_size * loc.Row(),
                            tile_size * loc.Col(),
                            tile_size * loc.Row() + tile_size,
                            tile_size * loc.Col() + tile_size));
-  //}
+  }
 }
 
 void MyApp::keyDown(KeyEvent event) {
