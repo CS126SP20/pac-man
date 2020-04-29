@@ -22,5 +22,11 @@
     - Fixed bug that was causing the ghost to move L/R/U/D instead of U/D/L/R
     - Added some logic that allows 1 ghost to move on its own; however, still
     quite buggy so I need to smooth things out still
+    
+- **4/27/20**
+    - Finished adding logic so now all ghosts move freely & randomly across the board
+    
+- **4/28/20**
+    - 
 
 ---

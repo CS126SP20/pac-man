@@ -46,7 +46,7 @@ Engine::Engine(size_t given_width, size_t given_height)
 Engine::Engine(size_t given_width, size_t given_height, unsigned seed)
     : width{given_width}, height{given_height},
       pacman{kStartLocPacMan},
-      map{},
+      map{}, points(0),
       rng{seed} {
 
   for (int i = 0; i < kNumGhosts; i++) {
@@ -56,6 +56,17 @@ Engine::Engine(size_t given_width, size_t given_height, unsigned seed)
 }
 
 void Engine::Step() {
+
+  //If Pac-Man's current location contains food, eat food
+  Location curr_loc = pacman.GetLocation();
+  std::vector<Location> food_loc = map.GetFoodLoc();
+
+  if (std::find(food_loc.begin(), food_loc.end(), curr_loc) != food_loc.end()) {
+    points += 10;
+    food_loc.erase(std::remove(food_loc.begin(), food_loc.end(), curr_loc), food_loc.end());
+    map.SetFoodLoc(food_loc);
+  }
+
   StepPacMan();
   StepGhosts();
 }
@@ -142,6 +153,12 @@ bool Engine::IsValidLocation(Location target_loc) {
 void Engine::SetMap(const Map& given_map) {
   map = given_map;
 }
+
+void Engine::SetPoints(const int& new_points) {
+  points = new_points;
+}
+
+int Engine::GetPoints() const { return points; }
 
 Direction Engine::SetPMDirection(const Direction& given_direction) {
   pacman.SetLastDirection(pacman.GetDirection());

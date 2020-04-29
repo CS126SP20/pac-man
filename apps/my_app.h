@@ -28,6 +28,8 @@ class MyApp : public cinder::app::App {
   void DrawPreGame() const;
   void DrawPacMan() const;
   void DrawGhosts() const;
+  void DrawFood() const;
+  void DrawPoints() const;
 
  private:
   myapp::Engine engine;
@@ -37,9 +39,7 @@ class MyApp : public cinder::app::App {
   std::chrono::time_point<std::chrono::system_clock> last_time;
 
   cinder::gl::Texture2dRef pac_man_image;
-
   std::vector<cinder::gl::Texture2dRef> ghost_images;
-
   cinder::gl::Texture2dRef gate_image;
   cinder::gl::Texture2dRef wall_image;
 };

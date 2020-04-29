@@ -70,10 +70,12 @@ void MyApp::setup() {
 void MyApp::update() {
   const auto time = system_clock::now();
 
-  // The constant is speed_; need to add GFLAGS later / make const variable
-  if (time - last_time > std::chrono::milliseconds(50)) {
-    engine.Step();
-    last_time = time;
+  if (game_started) {
+    // The constant is speed_; need to add GFLAGS later / make const variable
+    if (time - last_time > std::chrono::milliseconds(50)) {
+      engine.Step();
+      last_time = time;
+    }
   }
 }
 
@@ -86,13 +88,17 @@ void MyApp::draw() {
   cinder::gl::clear();
   DrawBackground();
 
+
   DrawPacMan();
   DrawGhosts();
 
-  /*
+  DrawFood();
+
+  DrawPoints();
+
   if (!game_started) {
     DrawPreGame();
-  }*/
+  }
 }
 
 void PrintText(const string& text, const Color& color, const cinder::ivec2& size,
@@ -101,7 +107,7 @@ void PrintText(const string& text, const Color& color, const cinder::ivec2& size
 
   auto box = TextBox()
       .alignment(TextBox::CENTER)
-      .font(cinder::Font(kDifferentFont, 30))
+      .font(cinder::Font(kNormalFont, 30))
       .size(size)
       .color(color)
       .backgroundColor(ColorA(0, 0, 0, 0))
@@ -135,13 +141,6 @@ void MyApp::DrawBackground() const {
                                           tile_size * loc.Col(),
                                           tile_size * loc.Row() + tile_size,
                                           tile_size * loc.Col() + tile_size));
-      } else if (c == '.') {
-        // Draws the food
-        const cinder::vec2 center = {(loc.Row() * tile_size) + (tile_size / 2),
-                                     (loc.Col() * tile_size) + (tile_size / 2)};
-
-        //cinder::gl::color(1, 0.8, 0.6);
-        cinder::gl::drawSolidCircle(center, 2, -1);
       }
     }
   }
@@ -150,9 +149,9 @@ void MyApp::DrawBackground() const {
 void MyApp::DrawPreGame() const {
   const cinder::ivec2 size = {500, 50};
   const Color color = Color::white();
-  const Location loc((FLAGS_width / 2) * tile_size, (FLAGS_height / 2) * tile_size);
 
-  //PrintText("Press SPACE to begin", color, size, loc);
+  PrintText("Press 'ENTER' to begin", color, size,
+            {(FLAGS_height / 2) * tile_size, (FLAGS_width / 18) * tile_size});
 }
 
 void MyApp::DrawPacMan() const {
@@ -179,6 +178,28 @@ void MyApp::DrawGhosts() const {
   }
 }
 
+void MyApp::DrawFood() const {
+  std::vector<Location> food_loc = map.GetFoodLoc();
+
+  for (auto loc : food_loc) {
+    const cinder::vec2 center = {(loc.Row() * tile_size) + (tile_size / 2),
+                                 (loc.Col() * tile_size) + (tile_size / 2)};
+
+    //cinder::gl::color(1, 0.8, 0.6);
+    cinder::gl::drawSolidCircle(center, 2, -1);
+  }
+}
+
+void MyApp::DrawPoints() const {
+  const cinder::ivec2 size = {500, 50};
+  const Color color = Color::white();
+
+  std::string points_str = std::to_string(engine.GetPoints());
+
+  PrintText(points_str, color, size,
+            {(FLAGS_height) * (tile_size - 1), (FLAGS_width / 18) * tile_size});
+}
+
 void MyApp::keyDown(KeyEvent event) {
   switch (event.getCode()) {
     case KeyEvent::KEY_UP: {
@@ -195,6 +216,10 @@ void MyApp::keyDown(KeyEvent event) {
     }
     case KeyEvent::KEY_RIGHT:{
       engine.SetPMDirection(Direction::kRight);
+      break;
+    }
+    case KeyEvent::KEY_RETURN:{
+      game_started = true;
       break;
     }
   }

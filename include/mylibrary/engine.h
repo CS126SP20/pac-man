@@ -19,10 +19,9 @@
 namespace myapp {
 
 using cinder::app::KeyEvent;
-const Location kStartLocPacMan{14, 20};
+const Location kStartLocPacMan{1/*4*/, 4/*20*/};
 const Location kStartLocGhost{12, 14};
 const size_t kNumGhosts = 4;
-const int kUnweightedProb = 20;
 
 class Engine {
  public:
@@ -46,24 +45,18 @@ class Engine {
 
   std::vector<Direction> GetPossDirections(Ghost ghost);
 
-  Direction SetRandDirection(std::vector<Direction> poss_d, const Ghost &ghost);
-
   Location GetTargetLoc(const Location& loc, const Direction& direction);
-
-  double FindDistance(const Location& curr_loc, const Location& target_loc);
 
   bool IsValidLocation(Location target_loc);
 
-  std::map<bool, vector<Direction>> FilterDirection(std::vector<Direction> &poss_d, const Ghost &ghost);
-
-  std::map<Direction, std::pair<int, int>> AddWeight(const std::map<bool, vector<Direction>>& poss_d);
-
-  Direction PickWeightedDirection(const std::map<Direction, std::pair<int, int>>& directions);
+  void SetPoints(const int& new_points);
+  int GetPoints() const;
 
  private:
   const size_t width;
   const size_t height;
   Map map;
+  int points;
   PacMan pacman;
   std::vector<Ghost> ghosts;
   std::mt19937 rng;

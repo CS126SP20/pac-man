@@ -53,7 +53,6 @@ void SetUp(App::Settings* settings) {
   settings->setResizable(false);
   settings->setTitle("My CS 126 Application");
 
-  // Not sure what this does
   std::srand(std::time(0));
 }
 

@@ -35,7 +35,7 @@ void Map::ParseFile(const string& file) {
   std::ifstream infile(file);
   string line;
 
-  int row_count = 1;
+  int row_count = 0;
   while (getline(infile, line)) {
     vector<char> layout_line;
 
@@ -44,8 +44,9 @@ void Map::ParseFile(const string& file) {
       layout_line.push_back(static_cast<char>(c));
 
       if (c == '.') {
-        Location loc = Location(row_count, i);
+        Location loc = Location(i, row_count);
         food_loc_temp.push_back(loc);
+
       }
     }
     map.push_back(layout_line);
