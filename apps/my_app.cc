@@ -34,7 +34,6 @@ DECLARE_string(map_file);
 
 MyApp::MyApp()
     : engine{FLAGS_width, FLAGS_height},
-      map{},
       state{GameState::kPreGame},
       tile_size(FLAGS_tilesize) {}
 
@@ -60,6 +59,7 @@ void MyApp::setup() {
   wall_image = cinder::gl::Texture::create(loadImage(
       loadAsset("blue_wall_block.png")));
 
+  Map map = Map();
   map.ParseFile(FLAGS_map_file);
   engine.SetMap(map);
 
@@ -73,7 +73,6 @@ void MyApp::update() {
   if (state == GameState::kPlaying) {
     // The constant is speed_; need to add GFLAGS later / make const variable
     if (time - last_time > std::chrono::milliseconds(50)) {
-      SetMap(engine.GetMap());
       engine.Step();
       last_time = time;
     }
@@ -121,7 +120,7 @@ void PrintText(const string& text, const Color& color, const cinder::ivec2& size
 }
 
 void MyApp::DrawBackground() const {
-  vector<vector<char>> layout = map.GetLayout();
+  vector<vector<char>> layout = engine.GetMap().GetLayout();
 
   for (int row = 3; row < FLAGS_width - 1; row++) {
     for (int col = 0; col < FLAGS_height; col++) {
@@ -178,12 +177,8 @@ void MyApp::DrawGhosts() const {
   }
 }
 
-void MyApp::SetMap(const Map& given_map) {
-  map = given_map;
-}
-
 void MyApp::DrawFood() const {
-  std::vector<Location> food_loc = map.GetFoodLoc();
+  std::vector<Location> food_loc = engine.GetMap().GetFoodLoc();
 
   for (auto loc : food_loc) {
     const cinder::vec2 center = {(loc.Row() * tile_size) + (tile_size / 2),

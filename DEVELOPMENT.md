@@ -30,5 +30,8 @@
     - Set up pre-game state where user must hit 'enter' to begin playing
     - Point system works correctly (10 points per food); however, food does not
     yet disappear when Pac-Man 'eats' it
+    
+- **4/29/20**
+    - Food disappears when Pac-Man eats it
 
 ---
