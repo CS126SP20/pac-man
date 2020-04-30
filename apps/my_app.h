@@ -15,6 +15,12 @@
 
 namespace myapp {
 
+enum class GameState {
+  kPreGame,
+  kPlaying,
+  kGameOver,
+};
+
 class MyApp : public cinder::app::App {
  public:
   MyApp();
@@ -31,11 +37,13 @@ class MyApp : public cinder::app::App {
   void DrawFood() const;
   void DrawPoints() const;
 
+  void SetMap(const Map& given_map);
+
  private:
   myapp::Engine engine;
   myapp::Map map;
+  GameState state;
   const size_t tile_size;
-  bool game_started;
   std::chrono::time_point<std::chrono::system_clock> last_time;
 
   cinder::gl::Texture2dRef pac_man_image;

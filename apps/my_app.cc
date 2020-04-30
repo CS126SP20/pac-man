@@ -35,8 +35,8 @@ DECLARE_string(map_file);
 MyApp::MyApp()
     : engine{FLAGS_width, FLAGS_height},
       map{},
-      tile_size(FLAGS_tilesize),
-      game_started{false} {}
+      state{GameState::kPreGame},
+      tile_size(FLAGS_tilesize) {}
 
 void MyApp::setup() {
   pac_man_image = cinder::gl::Texture::create(loadImage(
@@ -70,9 +70,10 @@ void MyApp::setup() {
 void MyApp::update() {
   const auto time = system_clock::now();
 
-  if (game_started) {
+  if (state == GameState::kPlaying) {
     // The constant is speed_; need to add GFLAGS later / make const variable
     if (time - last_time > std::chrono::milliseconds(50)) {
+      SetMap(engine.GetMap());
       engine.Step();
       last_time = time;
     }
@@ -86,19 +87,18 @@ void MyApp::draw() {
   cinder::gl::disableDepthWrite();
 
   cinder::gl::clear();
-  DrawBackground();
 
+  if (state == GameState::kPreGame) {
+    DrawPreGame();
+  }
+
+  DrawBackground();
+  DrawFood();
 
   DrawPacMan();
   DrawGhosts();
 
-  DrawFood();
-
   DrawPoints();
-
-  if (!game_started) {
-    DrawPreGame();
-  }
 }
 
 void PrintText(const string& text, const Color& color, const cinder::ivec2& size,
@@ -178,6 +178,10 @@ void MyApp::DrawGhosts() const {
   }
 }
 
+void MyApp::SetMap(const Map& given_map) {
+  map = given_map;
+}
+
 void MyApp::DrawFood() const {
   std::vector<Location> food_loc = map.GetFoodLoc();
 
@@ -197,7 +201,7 @@ void MyApp::DrawPoints() const {
   std::string points_str = std::to_string(engine.GetPoints());
 
   PrintText(points_str, color, size,
-            {(FLAGS_height) * (tile_size - 1), (FLAGS_width / 18) * tile_size});
+            {(FLAGS_height) * (tile_size - 2), (FLAGS_width / 18) * tile_size});
 }
 
 void MyApp::keyDown(KeyEvent event) {
@@ -219,7 +223,7 @@ void MyApp::keyDown(KeyEvent event) {
       break;
     }
     case KeyEvent::KEY_RETURN:{
-      game_started = true;
+      state = GameState::kPlaying;
       break;
     }
   }

@@ -19,7 +19,7 @@
 namespace myapp {
 
 using cinder::app::KeyEvent;
-const Location kStartLocPacMan{1/*4*/, 4/*20*/};
+const Location kStartLocPacMan{14, 20};
 const Location kStartLocGhost{12, 14};
 const size_t kNumGhosts = 4;
 
@@ -36,6 +36,8 @@ class Engine {
   void StepGhosts();
 
   void SetMap(const Map& given_map);
+
+  Map GetMap() const;
 
   PacMan GetPacMan() const;
 

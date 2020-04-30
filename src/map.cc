@@ -46,7 +46,6 @@ void Map::ParseFile(const string& file) {
       if (c == '.') {
         Location loc = Location(i, row_count);
         food_loc_temp.push_back(loc);
-
       }
     }
     map.push_back(layout_line);

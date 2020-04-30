@@ -152,11 +152,14 @@ bool Engine::IsValidLocation(Location target_loc) {
 
 void Engine::SetMap(const Map& given_map) {
   map = given_map;
+  map.SetFoodLoc(given_map.GetFoodLoc());
 }
 
 void Engine::SetPoints(const int& new_points) {
   points = new_points;
 }
+
+Map Engine::GetMap() const { return map; }
 
 int Engine::GetPoints() const { return points; }
 
