@@ -56,9 +56,9 @@ Engine::Engine(size_t given_width, size_t given_height, unsigned seed)
 }
 
 void Engine::Step() {
+  Location curr_loc = pacman.GetLocation();
 
   //If Pac-Man's current location contains food, eat food
-  Location curr_loc = pacman.GetLocation();
   std::vector<Location> food_loc = map.GetFoodLoc();
 
   if (std::find(food_loc.begin(), food_loc.end(), curr_loc) != food_loc.end()) {
@@ -69,6 +69,14 @@ void Engine::Step() {
 
   StepPacMan();
   StepGhosts();
+
+  // Did a collision occur? **Not sure if its detecting every collision rn
+  for (auto & ghost : ghosts) {
+    if (curr_loc == ghost.GetLocation()) {
+      int curr_lives = pacman.GetLives();
+      pacman.SetLives(curr_lives - 1);
+    }
+  }
 }
 
 void Engine::StepPacMan() {

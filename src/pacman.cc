@@ -9,8 +9,15 @@
 namespace myapp {
 
 PacMan::PacMan(const Location& given_location)
-    : location{given_location},
+    : num_lives{kNumLives},
+      location{given_location},
       direction{}, last_direction{Direction::kUp} {}
+
+int PacMan::GetLives() const { return num_lives; }
+
+void PacMan::SetLives(const int& given_lives) {
+  num_lives = given_lives;
+}
 
 Direction PacMan::GetDirection() const { return direction; }
 

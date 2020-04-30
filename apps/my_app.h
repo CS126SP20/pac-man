@@ -36,6 +36,7 @@ class MyApp : public cinder::app::App {
   void DrawGhosts() const;
   void DrawFood() const;
   void DrawPoints() const;
+  void DrawLives() const;
 
  private:
   myapp::Engine engine;
@@ -47,6 +48,7 @@ class MyApp : public cinder::app::App {
   std::vector<cinder::gl::Texture2dRef> ghost_images;
   cinder::gl::Texture2dRef gate_image;
   cinder::gl::Texture2dRef wall_image;
+  cinder::gl::Texture2dRef pac_man_lives;
 };
 
 }  // namespace myapp

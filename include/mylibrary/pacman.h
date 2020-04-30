@@ -12,9 +12,14 @@
 
 namespace myapp {
 
+const int kNumLives = 3;
+
 class PacMan {
  public:
   explicit PacMan(const Location& given_location);
+
+  int GetLives() const;
+  void SetLives(const int& given_lives);
 
   Direction GetDirection() const;
   Direction SetDirection(const Direction& given_direction);
@@ -26,6 +31,7 @@ class PacMan {
   Location SetLocation(const Location& given_location);
 
  private:
+  int num_lives;
   Location location;
   Direction direction;
   Direction last_direction;

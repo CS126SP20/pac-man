@@ -59,6 +59,9 @@ void MyApp::setup() {
   wall_image = cinder::gl::Texture::create(loadImage(
       loadAsset("blue_wall_block.png")));
 
+  pac_man_lives = cinder::gl::Texture::create(loadImage(
+      loadAsset("pac_man_lives.png")));
+
   Map map = Map();
   map.ParseFile(FLAGS_map_file);
   engine.SetMap(map);
@@ -93,6 +96,7 @@ void MyApp::draw() {
 
   DrawBackground();
   DrawFood();
+  DrawLives();
 
   DrawPacMan();
   DrawGhosts();
@@ -197,6 +201,19 @@ void MyApp::DrawPoints() const {
 
   PrintText(points_str, color, size,
             {(FLAGS_height) * (tile_size - 2), (FLAGS_width / 18) * tile_size});
+}
+
+void MyApp::DrawLives() const {
+  int num_lives = engine.GetPacMan().GetLives();
+
+  for (int i = 0; i < num_lives; i++) {
+    Location loc = Location(1 + i, 1);
+    cinder::gl::draw(pac_man_lives,
+                     Rectf(tile_size * (loc.Row()),
+                           tile_size * loc.Col(),
+                           tile_size * (loc.Row()) + tile_size,
+                           tile_size * loc.Col() + tile_size));
+  }
 }
 
 void MyApp::keyDown(KeyEvent event) {
