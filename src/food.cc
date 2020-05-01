@@ -3,13 +3,13 @@
 //
 
 #include <mylibrary/food.h>
+#include <mylibrary/food_type.h>
 
 namespace myapp {
 
-Food::Food(const Location &given_loc, const FoodType &given_type) {
-  loc = given_loc;
-  food_type = given_type;
-}
+Food::Food(const Location &given_loc, const FoodType &given_type)
+    : loc{given_loc},
+      food_type{given_type} {}
 
 Location Food::GetLocation() const { return loc; }
 
@@ -24,5 +24,4 @@ FoodType Food::SetFoodType(const FoodType &given_type) {
   food_type = given_type;
   return food_type;
 }
-
 }

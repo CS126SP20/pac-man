@@ -6,18 +6,13 @@
 #define FINALPROJECT_FOOD_H
 
 #include "location.h"
+#include "food_type.h"
 
 namespace myapp {
 
 class Food {
-  enum class FoodType {
-    kNormal;
-    kSpecial;
-    kCherry;
-  };
-
  public:
-  Food(const Location& given_loc, const FoodType& given_type);
+  explicit Food(const Location& given_loc, const FoodType& given_type);
 
   Location GetLocation() const;
   Location SetLocation(const Location& given_loc);
@@ -29,7 +24,6 @@ class Food {
   Location loc;
   FoodType food_type;
 };
-
 }
 
 #endif  // FINALPROJECT_FOOD_H
