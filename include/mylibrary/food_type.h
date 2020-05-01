@@ -6,13 +6,10 @@
 #define FINALPROJECT_FOODTYPE_H
 
 namespace myapp {
-
-class FoodType {
-  enum class FoodType {
-    kNormal,
-    kSpecial,
-    kCherry,
-  };
+enum class FoodType {
+  kNormal,
+  kCherry,
+  kSpecial,
 };
 }
 

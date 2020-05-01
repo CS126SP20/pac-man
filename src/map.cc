@@ -22,15 +22,15 @@ void Map::SetLayout(const vector<vector<char>>& given_layout) {
 
 vector<vector<char>> Map::GetLayout() const { return layout; }
 
-void Map::SetFoodLoc(const vector<Location> &given_food_loc) {
-  food_loc = given_food_loc;
+void Map::SetFood(const vector<Food> &given_food) {
+  food = given_food;
 }
 
-vector<Location> Map::GetFoodLoc() const { return food_loc; }
+vector<Food> Map::GetFood() const { return food; }
 
 void Map::ParseFile(const string& file) {
   vector<vector<char>> map;
-  vector<Location> food_loc_temp;
+  vector<Food> food_temp;
 
   std::ifstream infile(file);
   string line;
@@ -43,16 +43,26 @@ void Map::ParseFile(const string& file) {
       char c = line.at(i);
       layout_line.push_back(static_cast<char>(c));
 
+      Location loc = Location(i, row_count);
+
       if (c == '.') {
-        Location loc = Location(i, row_count);
-        food_loc_temp.push_back(loc);
+        Food f = Food(loc, FoodType::kNormal);
+        food_temp.push_back(f);
+
+      } else if (c == 'o') {
+        Food f = Food(loc, FoodType::kSpecial);
+        food_temp.push_back(f);
+
+      } else if (c == 'c') {
+        Food f = Food(loc, FoodType::kCherry);
+        food_temp.push_back(f);
       }
     }
     map.push_back(layout_line);
     row_count++;
   }
   SetLayout(map);
-  SetFoodLoc(food_loc_temp);
+  SetFood(food_temp);
 }
 
 }; // namespace myapp

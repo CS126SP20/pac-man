@@ -5,6 +5,8 @@
 #ifndef FINALPROJECT_MAP_H
 #define FINALPROJECT_MAP_H
 
+#include "food.h"
+#include "food.h"
 #include "location.h"
 
 #include <string>
@@ -30,12 +32,12 @@ class Map {
   void SetLayout(const vector<vector<char>>& given_layout);
   vector<vector<char>> GetLayout() const;
 
-  void SetFoodLoc(const vector<Location>& given_food_loc);
-  vector<Location> GetFoodLoc() const;
+  void SetFood(const vector<Food>& given_food);
+  vector<Food> GetFood() const;
 
  private:
   vector<vector<char>> layout;
-  vector<Location> food_loc;
+  vector<Food> food;
 };
 }
 

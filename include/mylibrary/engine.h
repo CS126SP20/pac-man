@@ -29,7 +29,7 @@ class Engine {
 
   Engine(size_t given_width, size_t given_height, unsigned seed);
 
-  void Step();
+  int Step();
 
   void SetMap(const Map& given_map);
   Map GetMap() const;
@@ -39,13 +39,16 @@ class Engine {
 
   Direction SetPMDirection(const Direction& given_direction);
 
+  bool GetAteSpecialFood() const;
+  void SetAteSpecialFood(const bool& given_bool);
+
   void SetPoints(const int& new_points);
   int GetPoints() const;
 
  private:
   void StepPacMan();
   void StepGhosts();
-  void UpdateFood();
+  void EatFood();
 
   std::vector<Direction> GetPossDirections(Ghost ghost);
 
@@ -59,6 +62,7 @@ class Engine {
   Map map;
   PacMan pacman;
   std::vector<Ghost> ghosts;
+  bool ate_special_food;
   int points;
   std::mt19937 rng;
 };

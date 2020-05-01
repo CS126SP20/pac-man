@@ -12,6 +12,10 @@
 
 namespace myapp {
 
+using std::chrono::duration_cast;
+using std::chrono::seconds;
+using std::chrono::system_clock;
+
 // Converts a direction into a delta location.
 Location FromDirection(const Direction direction) {
   switch (direction) {
@@ -46,7 +50,7 @@ Engine::Engine(size_t given_width, size_t given_height)
 Engine::Engine(size_t given_width, size_t given_height, unsigned seed)
     : width{given_width}, height{given_height},
       pacman{kStartLocPacMan},
-      map{}, points(0),
+      map{}, ate_special_food{false}, points(0),
       rng{seed} {
 
   for (int i = 0; i < kNumGhosts; i++) {
@@ -55,10 +59,10 @@ Engine::Engine(size_t given_width, size_t given_height, unsigned seed)
   }
 }
 
-void Engine::Step() {
+int Engine::Step() {
   Location curr_loc = pacman.GetLocation();
 
-  UpdateFood();
+  EatFood();
   StepPacMan();
   StepGhosts();
 
@@ -126,16 +130,34 @@ void Engine::StepGhosts() {
   }
 }
 
-void Engine::UpdateFood() {
+void Engine::EatFood() {
   Location curr_loc = pacman.GetLocation();
 
-  //If Pac-Man's current location contains food, eat food
-  std::vector<Location> food_loc = map.GetFoodLoc();
+  // If Pac-Man's current location contains food, eat food
+  std::vector<Food> food = map.GetFood();
 
-  if (std::find(food_loc.begin(), food_loc.end(), curr_loc) != food_loc.end()) {
-    points += 10;
-    food_loc.erase(std::remove(food_loc.begin(), food_loc.end(), curr_loc), food_loc.end());
-    map.SetFoodLoc(food_loc);
+  for (int i = 0; i < food.size(); i++) {
+    if (food.at(i).GetLocation() == curr_loc) {
+      if (food.at(i).GetFoodType() == FoodType::kNormal) {
+        points += 10;
+        food.erase(food.begin() + i);
+        map.SetFood(food);
+        break;
+
+      } else if (food.at(i).GetFoodType() == FoodType::kCherry) {
+        points += 100;
+        food.erase(food.begin() + i);
+        map.SetFood(food);
+        break;
+
+      } else if (food.at(i).GetFoodType() == FoodType::kSpecial) {
+        points += 50;
+        food.erase(food.begin() + i);
+        map.SetFood(food);
+        ate_special_food = true;
+        break;
+      }
+    }
   }
 }
 
@@ -171,7 +193,7 @@ bool Engine::IsValidLocation(Location target_loc) {
 
 void Engine::SetMap(const Map& given_map) {
   map = given_map;
-  map.SetFoodLoc(given_map.GetFoodLoc());
+  map.SetFood(given_map.GetFood());
 }
 
 void Engine::SetPoints(const int& new_points) {
@@ -185,6 +207,12 @@ int Engine::GetPoints() const { return points; }
 Direction Engine::SetPMDirection(const Direction& given_direction) {
   pacman.SetLastDirection(pacman.GetDirection());
   pacman.SetDirection(given_direction);
+}
+
+bool Engine::GetAteSpecialFood() const { return ate_special_food; }
+
+void Engine::SetAteSpecialFood(const bool &given_bool) {
+  ate_special_food = given_bool;
 }
 }
 

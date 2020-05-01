@@ -54,6 +54,9 @@ void MyApp::setup() {
   ghost_images.push_back(cinder::gl::Texture::create(loadImage(
       loadAsset("clyde.png"))));
 
+  special_ghost = cinder::gl::Texture::create(loadImage(
+      loadAsset("ghost_special.png")));
+
   gate_image = cinder::gl::Texture::create(loadImage(
           loadAsset("cyan_gate_block.png")));
 
@@ -77,9 +80,8 @@ void MyApp::setup() {
 void MyApp::update() {
   const auto time = system_clock::now();
 
-  if (state == GameState::kPlaying) {
-    // The constant is speed_; need to add GFLAGS later / make const variable
-    if (time - last_time > std::chrono::milliseconds(50)) {
+  if (state == GameState::kPlaying || state == GameState::kPlayingSpecial) {
+    if (time - last_time > std::chrono::milliseconds(65)) {
       if (engine.GetPacMan().GetLives() <= 0) {
         state = GameState::kGameOver;
 
@@ -88,6 +90,12 @@ void MyApp::update() {
         last_time = time;
       }
     }
+
+    // Reverts back to regular ghosts after 5 seconds
+    if (time - last_time_special > std::chrono::seconds(5)) {
+      state = GameState::kPlaying;
+    }
+
   }
 }
 
@@ -106,6 +114,13 @@ void MyApp::draw() {
     if (state == GameState::kPreGame) {
       DrawPreGame();
     }
+
+    if (engine.GetAteSpecialFood()) {
+      engine.SetAteSpecialFood(false);
+      state = GameState::kPlayingSpecial;
+      last_time_special = system_clock::now();
+    }
+
     DrawBackground();
     DrawFood();
     DrawLives();
@@ -192,31 +207,44 @@ void MyApp::DrawGhosts() const {
   for (int i = 0; i < kNumGhosts; i++) {
     const Location loc = ghosts.at(i).GetLocation();
 
-    cinder::gl::draw(ghost_images.at(i),
-                     Rectf(tile_size * loc.Row(),
-                           tile_size * loc.Col(),
-                           tile_size * loc.Row() + tile_size,
-                           tile_size * loc.Col() + tile_size));
+    if (state == GameState::kPlayingSpecial) {
+      cinder::gl::draw(special_ghost,
+                       Rectf(tile_size * loc.Row(),
+                             tile_size * loc.Col(),
+                             tile_size * loc.Row() + tile_size,
+                             tile_size * loc.Col() + tile_size));
+    } else {
+      cinder::gl::draw(ghost_images.at(i),
+                       Rectf(tile_size * loc.Row(),
+                             tile_size * loc.Col(),
+                             tile_size * loc.Row() + tile_size,
+                             tile_size * loc.Col() + tile_size));
+    }
   }
 }
 
 void MyApp::DrawFood() const {
-  std::vector<Location> food_loc = engine.GetMap().GetFoodLoc();
+  std::vector<Food> food = engine.GetMap().GetFood();
 
-  for (auto loc : food_loc) {
+  for (auto & i : food) {
+    FoodType type = i.GetFoodType();
+    Location loc = i.GetLocation();
     const cinder::vec2 center = {(loc.Row() * tile_size) + (tile_size / 2),
                                  (loc.Col() * tile_size) + (tile_size / 2)};
 
-    //cinder::gl::color(1, 0.8, 0.6);
-    cinder::gl::drawSolidCircle(center, 2, -1);
+    if (type == FoodType::kNormal) {
+      cinder::gl::drawSolidCircle(center, 2, -1);
+
+    } else if (type == FoodType::kSpecial) {
+      cinder::gl::drawSolidCircle(center, 8, -1);
+
+    } else if (type == FoodType::kCherry) {
+      cinder::gl::draw(cherry_image, Rectf(tile_size * loc.Row(),
+                                           tile_size * loc.Col(),
+                                           tile_size * loc.Row() + tile_size,
+                                           tile_size * loc.Col() + tile_size));
+    }
   }
-
-  Location loc = Location(5, 2);
-
-  cinder::gl::draw(cherry_image, Rectf(tile_size * loc.Row(),
-                                       tile_size * loc.Col(),
-                                       tile_size * loc.Row() + tile_size,
-                                       tile_size * loc.Col() + tile_size));
 }
 
 void MyApp::DrawPoints() const {
