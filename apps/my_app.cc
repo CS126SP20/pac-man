@@ -2,6 +2,7 @@
 
 #include "my_app.h"
 
+
 #include <cinder/app/App.h>
 #include <cinder/Font.h>
 #include <cinder/Text.h>
@@ -59,8 +60,11 @@ void MyApp::setup() {
   wall_image = cinder::gl::Texture::create(loadImage(
       loadAsset("blue_wall_block.png")));
 
-  pac_man_lives = cinder::gl::Texture::create(loadImage(
+  pm_life_image = cinder::gl::Texture::create(loadImage(
       loadAsset("pac_man_lives.png")));
+
+  cherry_image = cinder::gl::Texture::create(loadImage(
+      loadAsset("cherry.png")));
 
   Map map = Map();
   map.ParseFile(FLAGS_map_file);
@@ -76,8 +80,13 @@ void MyApp::update() {
   if (state == GameState::kPlaying) {
     // The constant is speed_; need to add GFLAGS later / make const variable
     if (time - last_time > std::chrono::milliseconds(50)) {
-      engine.Step();
-      last_time = time;
+      if (engine.GetPacMan().GetLives() <= 0) {
+        state = GameState::kGameOver;
+
+      } else {
+        engine.Step();
+        last_time = time;
+      }
     }
   }
 }
@@ -90,18 +99,20 @@ void MyApp::draw() {
 
   cinder::gl::clear();
 
-  if (state == GameState::kPreGame) {
-    DrawPreGame();
+  if (state == GameState::kGameOver) {
+    DrawGameOver();
+
+  } else {
+    if (state == GameState::kPreGame) {
+      DrawPreGame();
+    }
+    DrawBackground();
+    DrawFood();
+    DrawLives();
+    DrawPacMan();
+    DrawGhosts();
+    DrawPoints();
   }
-
-  DrawBackground();
-  DrawFood();
-  DrawLives();
-
-  DrawPacMan();
-  DrawGhosts();
-
-  DrawPoints();
 }
 
 void PrintText(const string& text, const Color& color, const cinder::ivec2& size,
@@ -138,7 +149,7 @@ void MyApp::DrawBackground() const {
                                         tile_size * loc.Row() + tile_size,
                                         tile_size * loc.Col() + tile_size));
 
-      } else if (c == '&') {
+      } else if (c == '&' && state != GameState::kPlaying) {
         // Draws the gates that let the ghosts out
         cinder::gl::draw(gate_image, Rectf(tile_size * loc.Row(),
                                           tile_size * loc.Col(),
@@ -155,6 +166,14 @@ void MyApp::DrawPreGame() const {
 
   PrintText("Press 'ENTER' to begin", color, size,
             {(FLAGS_height / 2) * tile_size, (FLAGS_width / 18) * tile_size});
+}
+
+void MyApp::DrawGameOver() const {
+  const cinder::ivec2 size = {500, 50};
+  const Color color = Color::white();
+
+  PrintText("GAME OVER", color, size,
+            {(FLAGS_height / 2) * tile_size, (FLAGS_width / 2) * tile_size});
 }
 
 void MyApp::DrawPacMan() const {
@@ -191,6 +210,13 @@ void MyApp::DrawFood() const {
     //cinder::gl::color(1, 0.8, 0.6);
     cinder::gl::drawSolidCircle(center, 2, -1);
   }
+
+  Location loc = Location(5, 2);
+
+  cinder::gl::draw(cherry_image, Rectf(tile_size * loc.Row(),
+                                       tile_size * loc.Col(),
+                                       tile_size * loc.Row() + tile_size,
+                                       tile_size * loc.Col() + tile_size));
 }
 
 void MyApp::DrawPoints() const {
@@ -208,7 +234,7 @@ void MyApp::DrawLives() const {
 
   for (int i = 0; i < num_lives; i++) {
     Location loc = Location(1 + i, 1);
-    cinder::gl::draw(pac_man_lives,
+    cinder::gl::draw(pm_life_image,
                      Rectf(tile_size * (loc.Row()),
                            tile_size * loc.Col(),
                            tile_size * (loc.Row()) + tile_size,

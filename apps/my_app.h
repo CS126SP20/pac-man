@@ -32,6 +32,7 @@ class MyApp : public cinder::app::App {
  private:
   void DrawBackground() const;
   void DrawPreGame() const;
+  void DrawGameOver() const;
   void DrawPacMan() const;
   void DrawGhosts() const;
   void DrawFood() const;
@@ -48,7 +49,8 @@ class MyApp : public cinder::app::App {
   std::vector<cinder::gl::Texture2dRef> ghost_images;
   cinder::gl::Texture2dRef gate_image;
   cinder::gl::Texture2dRef wall_image;
-  cinder::gl::Texture2dRef pac_man_lives;
+  cinder::gl::Texture2dRef pm_life_image;
+  cinder::gl::Texture2dRef cherry_image;
 };
 
 }  // namespace myapp

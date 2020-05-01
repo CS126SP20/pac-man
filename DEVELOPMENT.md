@@ -33,5 +33,9 @@
     
 - **4/29/20**
     - Food disappears when Pac-Man eats it
+    - Displayed lives in the top left corner, also added logic that
+    detects collisions between Pac-Man & ghosts. Pac-Man loses a life when
+    he collides with a ghost. 
+    - Also added very basic UI to display when the game is over 
 
 ---

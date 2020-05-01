@@ -58,19 +58,11 @@ Engine::Engine(size_t given_width, size_t given_height, unsigned seed)
 void Engine::Step() {
   Location curr_loc = pacman.GetLocation();
 
-  //If Pac-Man's current location contains food, eat food
-  std::vector<Location> food_loc = map.GetFoodLoc();
-
-  if (std::find(food_loc.begin(), food_loc.end(), curr_loc) != food_loc.end()) {
-    points += 10;
-    food_loc.erase(std::remove(food_loc.begin(), food_loc.end(), curr_loc), food_loc.end());
-    map.SetFoodLoc(food_loc);
-  }
-
+  UpdateFood();
   StepPacMan();
   StepGhosts();
 
-  // Did a collision occur? **Not sure if its detecting every collision rn
+  // Did a collision occur? NOT DETECTING EVERY COLLISION, NEED TO FIX THIS
   for (auto & ghost : ghosts) {
     if (curr_loc == ghost.GetLocation()) {
       int curr_lives = pacman.GetLives();
@@ -99,10 +91,16 @@ void Engine::StepPacMan() {
 
 void Engine::StepGhosts() {
   for (int i = 0; i < kNumGhosts; i++) {
-    vector<Direction> poss_d = GetPossDirections(ghosts.at(i));
-
     Location curr_loc = ghosts.at(i).GetLocation();
     Direction curr_d = ghosts.at(i).GetDirection();
+
+    // This means the ghost is in the starting box
+    if (curr_loc.Row() > 10 && curr_loc.Row() < 17 && curr_loc.Col() > 15
+        && curr_loc.Col() < 19) {
+
+    }
+
+    vector<Direction> poss_d = GetPossDirections(ghosts.at(i));
 
     // This means that the ghost is at an intersection
     if (poss_d.size() == 1 || poss_d.size() == 2) {
@@ -125,6 +123,19 @@ void Engine::StepGhosts() {
         ghosts.at(i).SetLocation(target_loc);
       }
     }
+  }
+}
+
+void Engine::UpdateFood() {
+  Location curr_loc = pacman.GetLocation();
+
+  //If Pac-Man's current location contains food, eat food
+  std::vector<Location> food_loc = map.GetFoodLoc();
+
+  if (std::find(food_loc.begin(), food_loc.end(), curr_loc) != food_loc.end()) {
+    points += 10;
+    food_loc.erase(std::remove(food_loc.begin(), food_loc.end(), curr_loc), food_loc.end());
+    map.SetFoodLoc(food_loc);
   }
 }
 

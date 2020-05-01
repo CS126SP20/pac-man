@@ -31,19 +31,21 @@ class Engine {
 
   void Step();
 
-  void StepPacMan();
-
-  void StepGhosts();
-
   void SetMap(const Map& given_map);
-
   Map GetMap() const;
 
   PacMan GetPacMan() const;
-
   std::vector<Ghost> GetGhosts() const;
 
   Direction SetPMDirection(const Direction& given_direction);
+
+  void SetPoints(const int& new_points);
+  int GetPoints() const;
+
+ private:
+  void StepPacMan();
+  void StepGhosts();
+  void UpdateFood();
 
   std::vector<Direction> GetPossDirections(Ghost ghost);
 
@@ -51,16 +53,13 @@ class Engine {
 
   bool IsValidLocation(Location target_loc);
 
-  void SetPoints(const int& new_points);
-  int GetPoints() const;
-
  private:
   const size_t width;
   const size_t height;
   Map map;
-  int points;
   PacMan pacman;
   std::vector<Ghost> ghosts;
+  int points;
   std::mt19937 rng;
 };
 

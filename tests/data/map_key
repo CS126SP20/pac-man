@@ -1,4 +1,0 @@
-# -> wall
-$ -> gate to let the ghosts through
-- -> empty square that's a part of the board (will change to food later)
-? -> empty square that's out of bounds (not a part of the board)
