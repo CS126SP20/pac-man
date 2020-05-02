@@ -35,7 +35,7 @@ DECLARE_string(map_file);
 
 MyApp::MyApp()
     : engine{FLAGS_width, FLAGS_height},
-      state{GameState::kPreGame},
+      state{GameState::kNewGame},
       tile_size(FLAGS_tilesize) {}
 
 void MyApp::setup() {
@@ -117,8 +117,8 @@ void MyApp::draw() {
     DrawGameOver();
 
   } else {
-    if (state == GameState::kPreGame) {
-      DrawPreGame();
+    if (state == GameState::kNewGame) {
+      DrawNewGame();
     }
 
     if (state == GameState::kGameReset) {
@@ -187,8 +187,8 @@ void MyApp::DrawBackground() const {
                                         tile_size * loc.Col() + tile_size));
 
         // Draws the gates
-      } else if (c == '&' && ((state == GameState::kPreGame) ||
-                              (state != GameState::kPreGame &&
+      } else if (c == '&' && ((state == GameState::kNewGame) ||
+                              (state != GameState::kNewGame &&
                                state != GameState::kPlayingSpecial &&
                                are_ghosts_in_box))) {
 
@@ -202,6 +202,10 @@ void MyApp::DrawBackground() const {
 }
 
 void MyApp::DrawPreGame() const {
+
+}
+
+void MyApp::DrawNewGame() const {
   const cinder::ivec2 size = {500, 50};
   const Color color = Color::white();
 

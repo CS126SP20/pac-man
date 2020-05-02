@@ -23,6 +23,7 @@ DEFINE_uint32(width, 36, "the number of tiles in a row");
 DEFINE_uint32(height, 28, "the number of rows");
 DEFINE_uint32(tilesize, 20, "the size of each tile");
 DEFINE_uint32(speed, 50, "the speed (delay) of the game");
+DEFINE_string(name, "brianna", "the name of the player");
 
 std::string file_name = "/Users/bzhang/Downloads/cinder_0.9.2_mac/my-projects/final-project-bzhang33/tests/data/standard_map";
 DEFINE_string(map_file, file_name,"the file of the map");
@@ -30,16 +31,17 @@ DEFINE_string(map_file, file_name,"the file of the map");
 const int kSamples = 8;
 
 void ParseArgs(std::vector<std::string>* args) {
+  gflags::SetUsageMessage(
+      "Play a game of Pac-Man. Pass --helpshort for options.");
   int argc = static_cast<int>(args->size());
 
-  std::vector<char*> argvs;
-  for (std::string& str : *args) {
+  vector<char*> argvs;
+  for (string& str : *args) {
     argvs.push_back(&str[0]);
   }
 
   char** argv = argvs.data();
-
-
+  gflags::ParseCommandLineFlags(&argc, &argv, true);
 }
 
 void SetUp(App::Settings* settings) {

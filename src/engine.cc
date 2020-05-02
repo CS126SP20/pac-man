@@ -91,7 +91,7 @@ void Engine::Reset() {
   pacman.SetLocation(kStartLocPacMan);
   pacman.SetDirection(Direction::kUp);
   hit_ghost = false;
-  
+
   for (int i = 0; i < ghosts.size(); i++) {
     Location loc = Location(kStartLocGhost.Row() + i, kStartLocGhost.Col());
     ghosts.at(i).SetLocation(loc);

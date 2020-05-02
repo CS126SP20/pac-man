@@ -17,6 +17,7 @@ namespace myapp {
 
 enum class GameState {
   kPreGame,
+  kNewGame,
   kGameReset,
   kPlaying,
   kPlayingSpecial,
@@ -35,6 +36,7 @@ class MyApp : public cinder::app::App {
   void DrawBackground() const;
 
   void DrawPreGame() const;
+  void DrawNewGame() const;
   void DrawGameReset() const;
   void DrawGameOver() const;
 

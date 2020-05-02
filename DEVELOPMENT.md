@@ -37,5 +37,14 @@
     detects collisions between Pac-Man & ghosts. Pac-Man loses a life when
     he collides with a ghost. 
     - Also added very basic UI to display when the game is over 
+    
+- **5/1/20**
+    - Created a Food class and FoodType enum class. Updated Map class, logic, and
+    UI accordingly.
+    - Added additional types of food and the behavior that corresponds with it.
+        - Pacman now can 'eat' ghosts after eating 'special' food
+    - Added logic so that the gate displays correctly depending on GameState
+    - Added logic that resets the location of PacMan & the ghosts after 
+    PacMan loses a life from colliding with a ghost
 
 ---
