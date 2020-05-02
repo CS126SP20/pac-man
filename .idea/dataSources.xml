@@ -1,0 +1,17 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<project version="4">
+  <component name="DataSourceManagerImpl" format="xml" multifile-model="true">
+    <data-source source="LOCAL" name="pm.db" uuid="23b41a1a-dccc-40b9-839b-40ead9bf678b">
+      <driver-ref>sqlite.xerial</driver-ref>
+      <synchronize>true</synchronize>
+      <jdbc-driver>org.sqlite.JDBC</jdbc-driver>
+      <jdbc-url>jdbc:sqlite:final-project-bzhang33/assets/pacman.db</jdbc-url>
+    </data-source>
+    <data-source source="LOCAL" name="pacman.db" uuid="32ae3062-daca-4fec-b9c6-895d2494cda3">
+      <driver-ref>sqlite.xerial</driver-ref>
+      <synchronize>true</synchronize>
+      <jdbc-driver>org.sqlite.JDBC</jdbc-driver>
+      <jdbc-url>jdbc:sqlite:$PROJECT_DIR$/assets/pacman.db</jdbc-url>
+    </data-source>
+  </component>
+</project>

@@ -5,7 +5,6 @@
 //
 
 #include <cmath>
-#include <map>
 #include <stdexcept>
 
 #include <mylibrary/engine.h>
@@ -50,7 +49,7 @@ Engine::Engine(size_t given_width, size_t given_height)
 Engine::Engine(size_t given_width, size_t given_height, unsigned seed)
     : width{given_width}, height{given_height},
       pacman{kStartLocPacMan},
-      map{}, points(0),
+      map{},
       ate_special_food{false}, hit_ghost{false},
       rng{seed} {
 
@@ -147,19 +146,19 @@ void Engine::EatFood() {
   for (int i = 0; i < food.size(); i++) {
     if (food.at(i).GetLocation() == curr_loc) {
       if (food.at(i).GetFoodType() == FoodType::kNormal) {
-        points += 10;
+        score += 10;
         food.erase(food.begin() + i);
         map.SetFood(food);
         break;
 
       } else if (food.at(i).GetFoodType() == FoodType::kCherry) {
-        points += 100;
+        score += 100;
         food.erase(food.begin() + i);
         map.SetFood(food);
         break;
 
       } else if (food.at(i).GetFoodType() == FoodType::kSpecial) {
-        points += 50;
+        score += 50;
         food.erase(food.begin() + i);
         map.SetFood(food);
         ate_special_food = true;
@@ -176,7 +175,7 @@ void Engine::CheckCollisions() {
     if (curr_loc == ghosts.at(i).GetLocation()) {
       if (ate_special_food) {
         ghosts.at(i).SetInBox(true);
-        points += 200;
+        score += 200;
         Location target_loc = Location(kStartLocGhost.Row() + i, kStartLocGhost.Col());
         ghosts.at(i).SetLocation(target_loc);
 
@@ -228,13 +227,9 @@ void Engine::SetMap(const Map& given_map) {
   map.SetFood(given_map.GetFood());
 }
 
-void Engine::SetPoints(const int& new_points) {
-  points = new_points;
-}
-
 Map Engine::GetMap() const { return map; }
 
-int Engine::GetPoints() const { return points; }
+size_t Engine::GetScore() const { return score; }
 
 Direction Engine::SetPMDirection(const Direction& given_direction) {
   pacman.SetLastDirection(pacman.GetDirection());

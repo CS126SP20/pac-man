@@ -23,18 +23,25 @@ using std::chrono::seconds;
 using std::chrono::system_clock;
 using std::vector;
 
+const char kDbPath[] = "pacman.db";
+
 const char kNormalFont[] = "Arial";
 const char kBoldFont[] = "Arial Bold";
 const char kDifferentFont[] = "Papyrus";
+
+const int kLimit = 3;
 
 DECLARE_uint32(width);
 DECLARE_uint32(height);
 DECLARE_uint32(tilesize);
 DECLARE_uint32(speed);
 DECLARE_string(map_file);
+DECLARE_string(name);
 
 MyApp::MyApp()
     : engine{FLAGS_width, FLAGS_height},
+      leaderboard{cinder::app::getAssetPath(kDbPath).string()},
+      player_name{FLAGS_name},
       state{GameState::kNewGame},
       tile_size(FLAGS_tilesize) {}
 
@@ -79,6 +86,14 @@ void MyApp::setup() {
 
 void MyApp::update() {
   const auto time = system_clock::now();
+
+  if (state == GameState::kGameOver) {
+    if (top_players.empty()) {
+      leaderboard.AddScoreToLeaderBoard({player_name, engine.GetScore()});
+      top_players = leaderboard.RetrieveHighScores(kLimit);
+      assert(!top_players.empty());
+    }
+  }
 
   if (state == GameState::kPlaying || state == GameState::kPlayingSpecial) {
     if (time - last_time > std::chrono::milliseconds(65)) {
@@ -222,11 +237,22 @@ void MyApp::DrawGameReset() const {
 }
 
 void MyApp::DrawGameOver() const {
+  const cinder::vec2 center = getWindowCenter();
   const cinder::ivec2 size = {500, 50};
   const Color color = Color::white();
 
-  PrintText("GAME OVER", color, size,
-            {(FLAGS_height / 2) * tile_size, (FLAGS_width / 2) * tile_size});
+  size_t row = 0;
+  PrintText("GAME OVER", color, size, {getWindowHeight() / 2,
+            getWindowHeight() / 10});
+
+  PrintText("All Time Top:", color, size,
+            {getWindowHeight() / 4, getWindowHeight() / 4});
+  for (const myapp::Player& player : top_players) {
+    std::stringstream ss;
+    ss << player.name << " - " << player.score;
+    PrintText(ss.str(), color, size, {getWindowHeight() / 4,
+                                      (getWindowHeight() / 4) + (++row) * 50});
+  }
 }
 
 void MyApp::DrawPacMan() const {
@@ -289,7 +315,7 @@ void MyApp::DrawPoints() const {
   const cinder::ivec2 size = {500, 50};
   const Color color = Color::white();
 
-  std::string points_str = std::to_string(engine.GetPoints());
+  std::string points_str = std::to_string(engine.GetScore());
 
   PrintText(points_str, color, size,
             {(FLAGS_height) * (tile_size - 2), (FLAGS_width / 18) * tile_size});

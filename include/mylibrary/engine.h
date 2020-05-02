@@ -44,8 +44,7 @@ class Engine {
   bool GetAteSpecialFood() const;
   void SetAteSpecialFood(const bool& given_bool);
 
-  void SetPoints(const int& new_points);
-  int GetPoints() const;
+  size_t GetScore() const;
 
   bool GetHitGhost() const;
   void SetHitGhost(const bool& given_bool);
@@ -71,7 +70,7 @@ class Engine {
   bool ate_special_food;
   bool hit_ghost;
 
-  int points;
+  size_t score;
   std::mt19937 rng;
 };
 

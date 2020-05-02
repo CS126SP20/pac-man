@@ -8,10 +8,12 @@
 #include <cinder/gl/Texture.h>
 #include <gflags/gflags.h>
 
-#include <mylibrary/engine.h>
 #include <mylibrary/direction.h>
+#include <mylibrary/engine.h>
+#include <mylibrary/leaderboard.h>
 #include <mylibrary/location.h>
 #include <mylibrary/map.h>
+#include <mylibrary/player.h>
 
 namespace myapp {
 
@@ -55,8 +57,11 @@ class MyApp : public cinder::app::App {
 
  private:
   myapp::Engine engine;
+  myapp::LeaderBoard leaderboard;
+  const std::string player_name;
   GameState state;
   const size_t tile_size;
+  std::vector<myapp::Player> top_players;
 
   std::chrono::time_point<std::chrono::system_clock> last_time;
   std::chrono::time_point<std::chrono::system_clock> last_time_special;
