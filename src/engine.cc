@@ -50,7 +50,8 @@ Engine::Engine(size_t given_width, size_t given_height)
 Engine::Engine(size_t given_width, size_t given_height, unsigned seed)
     : width{given_width}, height{given_height},
       pacman{kStartLocPacMan},
-      map{}, ate_special_food{false}, points(0),
+      map{}, points(0),
+      ate_special_food{false}, hit_ghost{false},
       rng{seed} {
 
   for (int i = 0; i < kNumGhosts; i++) {
@@ -59,7 +60,7 @@ Engine::Engine(size_t given_width, size_t given_height, unsigned seed)
   }
 }
 
-int Engine::Step() {
+void Engine::Step() {
   CheckCollisions();
   EatFood();
   StepPacMan();
@@ -86,12 +87,24 @@ void Engine::StepPacMan() {
   }
 }
 
+void Engine::Reset() {
+  pacman.SetLocation(kStartLocPacMan);
+  pacman.SetDirection(Direction::kUp);
+  hit_ghost = false;
+  
+  for (int i = 0; i < ghosts.size(); i++) {
+    Location loc = Location(kStartLocGhost.Row() + i, kStartLocGhost.Col());
+    ghosts.at(i).SetLocation(loc);
+    ghosts.at(i).SetInBox(true);
+  }
+}
+
 void Engine::StepGhosts() {
   for (int i = 0; i < kNumGhosts; i++) {
     Location curr_loc = ghosts.at(i).GetLocation();
     Direction curr_d = ghosts.at(i).GetDirection();
 
-    // This means the ghost is in the starting box
+    // This means the ghost is not in the starting box
     if (!(curr_loc.Row() > 10 && curr_loc.Row() < 17 && curr_loc.Col() > 15
         && curr_loc.Col() < 19)) {
       ghosts.at(i).SetInBox(false);
@@ -170,6 +183,7 @@ void Engine::CheckCollisions() {
       } else {
         int curr_lives = pacman.GetLives();
         pacman.SetLives(curr_lives - 1);
+        hit_ghost = true;
       }
     }
   }
@@ -232,6 +246,13 @@ bool Engine::GetAteSpecialFood() const { return ate_special_food; }
 void Engine::SetAteSpecialFood(const bool &given_bool) {
   ate_special_food = given_bool;
 }
+
+bool Engine::GetHitGhost() const { return hit_ghost; }
+
+void Engine::SetHitGhost(const bool& given_bool) {
+  hit_ghost = given_bool;
+}
+
 }
 
 #pragma clang diagnostic pop

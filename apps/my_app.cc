@@ -85,6 +85,10 @@ void MyApp::update() {
       if (engine.GetPacMan().GetLives() <= 0) {
         state = GameState::kGameOver;
 
+      } else if (engine.GetHitGhost()) {
+        engine.Reset();
+        state = GameState::kGameReset;
+
       } else {
         engine.Step();
         last_time = time;
@@ -115,6 +119,11 @@ void MyApp::draw() {
   } else {
     if (state == GameState::kPreGame) {
       DrawPreGame();
+    }
+
+    if (state == GameState::kGameReset) {
+      engine.Reset();
+      DrawGameReset();
     }
 
     if (engine.GetAteSpecialFood() && state != GameState::kPlayingSpecial) {
@@ -197,6 +206,14 @@ void MyApp::DrawPreGame() const {
   const Color color = Color::white();
 
   PrintText("Press 'ENTER' to begin", color, size,
+            {(FLAGS_height / 2) * tile_size, (FLAGS_width / 18) * tile_size});
+}
+
+void MyApp::DrawGameReset() const {
+  const cinder::ivec2 size = {500, 50};
+  const Color color = Color::white();
+
+  PrintText("Uh oh! Hit 'ENTER'", color, size,
             {(FLAGS_height / 2) * tile_size, (FLAGS_width / 18) * tile_size});
 }
 
