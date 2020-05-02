@@ -20,9 +20,13 @@ class Ghost {
   Location GetLocation() const;
   Location SetLocation(const Location& given_location);
 
+  bool GetInBox() const;
+  bool SetInBox(const bool& given_bool);
+
  private:
   Location location;
   Direction direction;
+  bool in_box;
 };
 }
 

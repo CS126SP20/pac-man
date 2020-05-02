@@ -32,18 +32,23 @@ class MyApp : public cinder::app::App {
 
  private:
   void DrawBackground() const;
+
   void DrawPreGame() const;
   void DrawGameOver() const;
+
   void DrawPacMan() const;
   void DrawGhosts() const;
   void DrawFood() const;
   void DrawPoints() const;
   void DrawLives() const;
 
+  bool GhostsInBox() const;
+
  private:
   myapp::Engine engine;
   GameState state;
   const size_t tile_size;
+
   std::chrono::time_point<std::chrono::system_clock> last_time;
   std::chrono::time_point<std::chrono::system_clock> last_time_special;
 

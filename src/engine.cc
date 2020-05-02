@@ -60,19 +60,10 @@ Engine::Engine(size_t given_width, size_t given_height, unsigned seed)
 }
 
 int Engine::Step() {
-  Location curr_loc = pacman.GetLocation();
-
+  CheckCollisions();
   EatFood();
   StepPacMan();
   StepGhosts();
-
-  // Did a collision occur? NOT DETECTING EVERY COLLISION, NEED TO FIX THIS
-  for (auto & ghost : ghosts) {
-    if (curr_loc == ghost.GetLocation()) {
-      int curr_lives = pacman.GetLives();
-      pacman.SetLives(curr_lives - 1);
-    }
-  }
 }
 
 void Engine::StepPacMan() {
@@ -82,12 +73,14 @@ void Engine::StepPacMan() {
 
   // If PM tries to move in an invalid direction, he doesn't stop and keeps
   // moving in the same direction he was moving
-  if (!IsValidLocation(target_loc)) {
+  char c = map.GetLayout()[target_loc.Col()][target_loc.Row()];
+
+  if ((c == '#' || c == '&' || c == '?')) {
     Direction last_direction = pacman.GetLastDirection();
     pacman.SetDirection(last_direction);
   }
 
-  if (IsValidLocation(target_loc)) {
+  if (!(c == '#' || c == '&' || c == '?')) {
     pacman.SetLocation(target_loc);
     pacman.SetLastDirection(curr_d);
   }
@@ -99,9 +92,9 @@ void Engine::StepGhosts() {
     Direction curr_d = ghosts.at(i).GetDirection();
 
     // This means the ghost is in the starting box
-    if (curr_loc.Row() > 10 && curr_loc.Row() < 17 && curr_loc.Col() > 15
-        && curr_loc.Col() < 19) {
-
+    if (!(curr_loc.Row() > 10 && curr_loc.Row() < 17 && curr_loc.Col() > 15
+        && curr_loc.Col() < 19)) {
+      ghosts.at(i).SetInBox(false);
     }
 
     vector<Direction> poss_d = GetPossDirections(ghosts.at(i));
@@ -115,7 +108,8 @@ void Engine::StepGhosts() {
       Direction new_d = poss_d.at(rand_index);
       Location target_loc = GetTargetLoc(curr_loc, new_d);
 
-      if (IsValidLocation(target_loc)) {
+      char c = map.GetLayout()[target_loc.Col()][target_loc.Row()];
+      if (!(c == '#' || c == '?')) {
         ghosts.at(i).SetLocation(target_loc);
         ghosts.at(i).SetDirection(new_d);
       }
@@ -123,7 +117,8 @@ void Engine::StepGhosts() {
       // Continue to move in the same direction
       Location target_loc = GetTargetLoc(curr_loc, curr_d);
 
-      if (IsValidLocation(target_loc)) {
+      char c = map.GetLayout()[target_loc.Col()][target_loc.Row()];
+      if (!(c == '#' || c == '?')) {
         ghosts.at(i).SetLocation(target_loc);
       }
     }
@@ -161,6 +156,25 @@ void Engine::EatFood() {
   }
 }
 
+void Engine::CheckCollisions() {
+  Location curr_loc = pacman.GetLocation();
+
+  for (int i = 0; i < ghosts.size(); i++) {
+    if (curr_loc == ghosts.at(i).GetLocation()) {
+      if (ate_special_food) {
+        ghosts.at(i).SetInBox(true);
+        points += 200;
+        Location target_loc = Location(kStartLocGhost.Row() + i, kStartLocGhost.Col());
+        ghosts.at(i).SetLocation(target_loc);
+
+      } else {
+        int curr_lives = pacman.GetLives();
+        pacman.SetLives(curr_lives - 1);
+      }
+    }
+  }
+}
+
 std::vector<Direction> Engine::GetPossDirections(Ghost ghost) {
   std::vector<Direction> poss_d;
 
@@ -173,8 +187,17 @@ std::vector<Direction> Engine::GetPossDirections(Ghost ghost) {
     if (direction != curr_d && !(IsOpposite(direction, curr_d))) {
       Location target_loc = GetTargetLoc(curr_loc, direction);
 
-      if (IsValidLocation(target_loc)) {
-        poss_d.push_back(direction);
+
+      char c = map.GetLayout()[target_loc.Col()][target_loc.Row()];
+      if (ghost.GetInBox()) {
+        if (!(c == '#' || c == '?')) {
+          poss_d.push_back(direction);
+        }
+
+      } else {
+        if (!(c == '#' || c == '&' || c == '?')) {
+          poss_d.push_back(direction);
+        }
       }
     }
   }
@@ -184,11 +207,6 @@ std::vector<Direction> Engine::GetPossDirections(Ghost ghost) {
 Location Engine::GetTargetLoc(const Location& curr_loc, const Direction& curr_d) {
   Location d_loc = FromDirection(curr_d);
   return ((curr_loc + d_loc)) % Location(height, width);
-}
-
-bool Engine::IsValidLocation(Location target_loc) {
-  char c = map.GetLayout()[target_loc.Col()][target_loc.Row()];
-  return !(c == '#' || c == '&' || c == '?');
 }
 
 void Engine::SetMap(const Map& given_map) {

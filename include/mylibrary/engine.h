@@ -20,7 +20,7 @@ namespace myapp {
 
 using cinder::app::KeyEvent;
 const Location kStartLocPacMan{14, 20};
-const Location kStartLocGhost{12, 14};
+const Location kStartLocGhost{12, 17};
 const size_t kNumGhosts = 4;
 
 class Engine {
@@ -48,13 +48,13 @@ class Engine {
  private:
   void StepPacMan();
   void StepGhosts();
+  void StepGhostsSpecial();
   void EatFood();
+  void CheckCollisions();
 
   std::vector<Direction> GetPossDirections(Ghost ghost);
 
   Location GetTargetLoc(const Location& loc, const Direction& direction);
-
-  bool IsValidLocation(Location target_loc);
 
  private:
   const size_t width;

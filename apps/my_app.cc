@@ -92,8 +92,10 @@ void MyApp::update() {
     }
 
     // Reverts back to regular ghosts after 5 seconds
-    if (time - last_time_special > std::chrono::seconds(5)) {
+    if (time - last_time_special > std::chrono::seconds(20)
+        && state == GameState::kPlayingSpecial) {
       state = GameState::kPlaying;
+      engine.SetAteSpecialFood(false);
     }
 
   }
@@ -115,8 +117,7 @@ void MyApp::draw() {
       DrawPreGame();
     }
 
-    if (engine.GetAteSpecialFood()) {
-      engine.SetAteSpecialFood(false);
+    if (engine.GetAteSpecialFood() && state != GameState::kPlayingSpecial) {
       state = GameState::kPlayingSpecial;
       last_time_special = system_clock::now();
     }
@@ -149,6 +150,16 @@ void PrintText(const string& text, const Color& color, const cinder::ivec2& size
   cinder::gl::draw(texture, locp);
 }
 
+bool MyApp::GhostsInBox() const {
+  std::vector<Ghost> ghosts = engine.GetGhosts();
+  for (auto & ghost : ghosts) {
+    if (ghost.GetInBox()) {
+      return false;
+    }
+  }
+  return true;
+}
+
 void MyApp::DrawBackground() const {
   vector<vector<char>> layout = engine.GetMap().GetLayout();
 
@@ -157,6 +168,8 @@ void MyApp::DrawBackground() const {
       char c = layout[row][col];
       Location loc(col, row);
 
+      bool are_ghosts_in_box = GhostsInBox();
+
       if (c == '#') {
         // Draws the walls
         cinder::gl::draw(wall_image,Rectf(tile_size * loc.Row(),
@@ -164,12 +177,16 @@ void MyApp::DrawBackground() const {
                                         tile_size * loc.Row() + tile_size,
                                         tile_size * loc.Col() + tile_size));
 
-      } else if (c == '&' && state != GameState::kPlaying) {
-        // Draws the gates that let the ghosts out
+        // Draws the gates
+      } else if (c == '&' && ((state == GameState::kPreGame) ||
+                              (state != GameState::kPreGame &&
+                               state != GameState::kPlayingSpecial &&
+                               are_ghosts_in_box))) {
+
         cinder::gl::draw(gate_image, Rectf(tile_size * loc.Row(),
-                                          tile_size * loc.Col(),
-                                          tile_size * loc.Row() + tile_size,
-                                          tile_size * loc.Col() + tile_size));
+                                           tile_size * loc.Col(),
+                                           tile_size * loc.Row() + tile_size,
+                                           tile_size * loc.Col() + tile_size));
       }
     }
   }
