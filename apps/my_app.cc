@@ -4,6 +4,7 @@
 
 
 #include <cinder/app/App.h>
+#include <cinder/audio/audio.h>
 #include <cinder/Font.h>
 #include <cinder/Text.h>
 #include <cinder/Vector.h>
@@ -54,7 +55,7 @@ void MyApp::setup() {
       loadAsset("game_over.png")));
 
   pac_man_image = cinder::gl::Texture::create(loadImage(
-      loadAsset("primitive-pac-man.png")));
+      loadAsset("pacman.png")));
 
   ghost_images.push_back(cinder::gl::Texture::create(loadImage(
       loadAsset("inky.png"))));
@@ -83,6 +84,26 @@ void MyApp::setup() {
   cherry_image = cinder::gl::Texture::create(loadImage(
       loadAsset("cherry.png")));
 
+  cinder::audio::SourceFileRef sourceFile_1 =
+      cinder::audio::load( cinder::app::loadAsset("Chomp.wav") );
+  cinder::audio::SourceFileRef sourceFile_2 =
+      cinder::audio::load( cinder::app::loadAsset("Death.wav") );
+  cinder::audio::SourceFileRef sourceFile_3 =
+      cinder::audio::load( cinder::app::loadAsset("Fruit.wav") );
+  cinder::audio::SourceFileRef sourceFile_4 =
+      cinder::audio::load( cinder::app::loadAsset("Ghost.wav") );
+  cinder::audio::SourceFileRef sourceFile_5 =
+      cinder::audio::load( cinder::app::loadAsset("Intro.wav") );
+
+  background_music = cinder::audio::Voice::create ( sourceFile_5 );
+  eating_fruit = cinder::audio::Voice::create ( sourceFile_3 );
+  eating_ghost = cinder::audio::Voice::create ( sourceFile_4 );
+  eating_standard = cinder::audio::Voice::create ( sourceFile_1 );
+  pacman_dying = cinder::audio::Voice::create ( sourceFile_2 );
+
+  // Start playing audio from the voice
+  background_music->start();
+
   Map map = Map();
   map.ParseFile(FLAGS_map_file);
   engine.SetMap(map);
@@ -93,6 +114,8 @@ void MyApp::setup() {
 
 void MyApp::update() {
   const auto time = system_clock::now();
+
+  BackgroundMusic();
 
   if (state == GameState::kGameOver) {
     if (top_players.empty()) {
@@ -107,7 +130,8 @@ void MyApp::update() {
       if (engine.GetPacMan().GetLives() <= 0) {
         state = GameState::kGameOver;
 
-      } else if (engine.GetHitGhost()) {
+      } else if (engine.GetHitGhost() && state) {
+        pacman_dying->start();
         engine.Reset();
         state = GameState::kGameReset;
 
@@ -369,6 +393,16 @@ void MyApp::DrawLives() const {
                            tile_size * loc.Col(),
                            tile_size * (loc.Row()) + tile_size,
                            tile_size * loc.Col() + tile_size));
+  }
+}
+
+void MyApp::BackgroundMusic() const {
+  if (state == GameState::kGameOver || state == GameState::kPreGame) {
+    if (!background_music->isPlaying()) {
+      background_music->start();
+    }
+  } else {
+    background_music->stop();
   }
 }
 

@@ -4,6 +4,7 @@
 #define FINALPROJECT_APPS_MYAPP_H_
 
 #include <cinder/app/App.h>
+#include <cinder/audio/audio.h>
 #include <cinder/gl/gl.h>
 #include <cinder/gl/Texture.h>
 #include <gflags/gflags.h>
@@ -48,6 +49,8 @@ class MyApp : public cinder::app::App {
   void DrawPoints() const;
   void DrawLives() const;
 
+  void BackgroundMusic() const;
+
   bool GhostsInBox() const;
 
   // Occurs when Pac-Man loses a life:
@@ -78,6 +81,12 @@ class MyApp : public cinder::app::App {
   cinder::gl::Texture2dRef wall_image;
   cinder::gl::Texture2dRef pm_life_image;
   cinder::gl::Texture2dRef cherry_image;
+
+  cinder::audio::VoiceRef background_music;
+  cinder::audio::VoiceRef eating_fruit;
+  cinder::audio::VoiceRef eating_ghost;
+  cinder::audio::VoiceRef eating_standard;
+  cinder::audio::VoiceRef pacman_dying;
 };
 
 }  // namespace myapp

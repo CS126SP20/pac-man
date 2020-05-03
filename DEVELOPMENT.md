@@ -46,5 +46,13 @@
     - Added logic so that the gate displays correctly depending on GameState
     - Added logic that resets the location of PacMan & the ghosts after 
     PacMan loses a life from colliding with a ghost
+    
+- **5/2/20**
+    - Created a leaderboard and player class
+    - Imported SQLite and used it to store, update, and display a leaderboard
+    - Created UI for a home screen and leaderboard/game over screen 
+    - Changed the font to an arcade font I downloaded on my computer
+    - Added background music
+    - Added audio for PacMan dying
 
 ---
