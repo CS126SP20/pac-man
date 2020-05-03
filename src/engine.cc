@@ -49,7 +49,7 @@ Engine::Engine(size_t given_width, size_t given_height)
 Engine::Engine(size_t given_width, size_t given_height, unsigned seed)
     : width{given_width}, height{given_height},
       pacman{kStartLocPacMan},
-      map{},
+      map{}, score{given_width - given_width},
       ate_special_food{false}, hit_ghost{false},
       rng{seed} {
 

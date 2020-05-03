@@ -25,9 +25,7 @@ using std::vector;
 
 const char kDbPath[] = "pacman.db";
 
-const char kNormalFont[] = "Arial";
-const char kBoldFont[] = "Arial Bold";
-const char kDifferentFont[] = "Papyrus";
+const char kNormalFont[] = "Arcade Normal";
 
 const int kLimit = 3;
 
@@ -161,7 +159,7 @@ void PrintText(const string& text, const Color& color, const cinder::ivec2& size
 
   auto box = TextBox()
       .alignment(TextBox::CENTER)
-      .font(cinder::Font(kNormalFont, 30))
+      .font(cinder::Font(kNormalFont, 15))
       .size(size)
       .color(color)
       .backgroundColor(ColorA(0, 0, 0, 0))
@@ -225,7 +223,7 @@ void MyApp::DrawNewGame() const {
   const Color color = Color::white();
 
   PrintText("Press 'ENTER' to begin", color, size,
-            {(FLAGS_height / 2) * tile_size, (FLAGS_width / 18) * tile_size});
+            {(FLAGS_height / 2) * tile_size, (FLAGS_width / 12) * (tile_size - 4)});
 }
 
 void MyApp::DrawGameReset() const {
@@ -233,7 +231,7 @@ void MyApp::DrawGameReset() const {
   const Color color = Color::white();
 
   PrintText("Uh oh! Hit 'ENTER'", color, size,
-            {(FLAGS_height / 2) * tile_size, (FLAGS_width / 18) * tile_size});
+            {(FLAGS_height / 2) * tile_size, (FLAGS_width / 12) * (tile_size - 4)});
 }
 
 void MyApp::DrawGameOver() const {
@@ -315,10 +313,10 @@ void MyApp::DrawPoints() const {
   const cinder::ivec2 size = {500, 50};
   const Color color = Color::white();
 
-  std::string points_str = std::to_string(engine.GetScore());
+  std::string points_str = std::to_string(static_cast<int>(engine.GetScore()));
 
   PrintText(points_str, color, size,
-            {(FLAGS_height) * (tile_size - 2), (FLAGS_width / 18) * tile_size});
+            {(FLAGS_height) * (tile_size - 2), (FLAGS_width / 12) * (tile_size - 4)});
 }
 
 void MyApp::DrawLives() const {
