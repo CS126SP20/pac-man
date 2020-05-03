@@ -27,7 +27,7 @@ const char kDbPath[] = "pacman.db";
 
 const char kNormalFont[] = "Arcade Normal";
 
-const int kLimit = 3;
+const int kLimit = 5;
 
 DECLARE_uint32(width);
 DECLARE_uint32(height);
@@ -35,7 +35,6 @@ DECLARE_uint32(tilesize);
 DECLARE_uint32(speed);
 DECLARE_string(map_file);
 DECLARE_string(name);
-
 
 MyApp::MyApp()
     : engine{FLAGS_width, FLAGS_height},
@@ -50,6 +49,9 @@ void MyApp::setup() {
 
   title_decor = cinder::gl::Texture::create(loadImage(
       loadAsset("title_decor.png")));
+
+  game_over = cinder::gl::Texture::create(loadImage(
+      loadAsset("game_over.png")));
 
   pac_man_image = cinder::gl::Texture::create(loadImage(
       loadAsset("primitive-pac-man.png")));
@@ -241,11 +243,11 @@ void MyApp::DrawPreGame() const {
   const cinder::ivec2 size = {500, 50};
   const Color color = Color::white();
 
-  PrintText("ENTER TO PLAY", color, size,
+  PrintText("-ENTER- TO PLAY", color, size,
             {(FLAGS_height / 2) * tile_size, (((FLAGS_width / 2) + 6) * (tile_size - 4))});
 
   // Draws the "HIT 'SPACE' TO VIEW LEADERBOARD
-  PrintText("SPACE FOR LEADERBOARD", color, size,
+  PrintText("-SPACE- FOR LEADERBOARD", color, size,
             {(FLAGS_height / 2) * tile_size, (((FLAGS_width / 2) + 8) * (tile_size - 4))});
 
 }
@@ -268,19 +270,25 @@ void MyApp::DrawGameReset() const {
 
 void MyApp::DrawGameOver() const {
   const cinder::vec2 center = getWindowCenter();
-  const cinder::ivec2 size = {500, 50};
+  const cinder::ivec2 size = {500, 30};
   const Color color = Color::white();
 
-  size_t row = 0;
-  PrintText("GAME OVER", color, size, {getWindowHeight() / 2,
-            getWindowHeight() / 10});
+  // Draws the game over title
+  Location loc = Location((((static_cast<double>(FLAGS_height)) / 2.0) - 7.5) * tile_size,
+                          (FLAGS_width / 9) * tile_size);
 
-  PrintText("All Time Top:", color, size,
-            {getWindowHeight() / 4, getWindowHeight() / 4});
+  cinder::gl::draw(game_over, Rectf(loc.Row(), loc.Col(),
+                                      loc.Row() + (15 * tile_size),
+                                      (loc.Col() + (4 * tile_size))));
+
+  PrintText("-SPACE- to return to the main menu", color, size,
+            {(FLAGS_height / 2) * tile_size, ((FLAGS_width / 6) * 5) * (tile_size)});
+
+  size_t row = 0;
   for (const myapp::Player& player : top_players) {
     std::stringstream ss;
     ss << player.name << " - " << player.score;
-    PrintText(ss.str(), color, size, {getWindowHeight() / 4,
+    PrintText(ss.str(), color, size, {(FLAGS_height / 2) * tile_size,
                                       (getWindowHeight() / 4) + (++row) * 50});
   }
 }
