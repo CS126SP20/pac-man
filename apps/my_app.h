@@ -66,6 +66,9 @@ class MyApp : public cinder::app::App {
   std::chrono::time_point<std::chrono::system_clock> last_time;
   std::chrono::time_point<std::chrono::system_clock> last_time_special;
 
+  cinder::gl::Texture2dRef title_image;
+  cinder::gl::Texture2dRef title_decor;
+
   cinder::gl::Texture2dRef pac_man_image;
   std::vector<cinder::gl::Texture2dRef> ghost_images;
   cinder::gl::Texture2dRef special_ghost;

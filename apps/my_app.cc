@@ -36,14 +36,21 @@ DECLARE_uint32(speed);
 DECLARE_string(map_file);
 DECLARE_string(name);
 
+
 MyApp::MyApp()
     : engine{FLAGS_width, FLAGS_height},
       leaderboard{cinder::app::getAssetPath(kDbPath).string()},
       player_name{FLAGS_name},
-      state{GameState::kNewGame},
+      state{GameState::kPreGame},
       tile_size(FLAGS_tilesize) {}
 
 void MyApp::setup() {
+  title_image = cinder::gl::Texture::create(loadImage(
+      loadAsset("pac_man_title.png")));
+
+  title_decor = cinder::gl::Texture::create(loadImage(
+      loadAsset("title_decor.png")));
+
   pac_man_image = cinder::gl::Texture::create(loadImage(
       loadAsset("primitive-pac-man.png")));
 
@@ -109,7 +116,7 @@ void MyApp::update() {
     }
 
     // Reverts back to regular ghosts after 5 seconds
-    if (time - last_time_special > std::chrono::seconds(20)
+    if (time - last_time_special > std::chrono::seconds(8)
         && state == GameState::kPlayingSpecial) {
       state = GameState::kPlaying;
       engine.SetAteSpecialFood(false);
@@ -120,13 +127,14 @@ void MyApp::update() {
 
 void MyApp::draw() {
   cinder::gl::enableAlphaBlending();
-
   cinder::gl::disableDepthRead();
   cinder::gl::disableDepthWrite();
-
   cinder::gl::clear();
 
-  if (state == GameState::kGameOver) {
+  if (state == GameState::kPreGame) {
+    DrawPreGame();
+
+  } else if (state == GameState::kGameOver) {
     DrawGameOver();
 
   } else {
@@ -215,6 +223,30 @@ void MyApp::DrawBackground() const {
 }
 
 void MyApp::DrawPreGame() const {
+  // Draws the PAC-MAN title
+  Location loc = Location(((FLAGS_width / 2) - 12) * tile_size,
+                          ((FLAGS_height / 3) * tile_size));
+  cinder::gl::draw(title_image, Rectf(loc.Row(), loc.Col(),
+                                      loc.Row() + (16 * tile_size),
+                                      loc.Col() + (4 * tile_size)));
+
+  // Draws the image below the PAC-MAN title
+  Location loc_2 = Location(((FLAGS_width / 2) - 9) * tile_size,
+                          ((FLAGS_height / 2) * tile_size));
+  cinder::gl::draw(title_decor, Rectf(loc_2.Row(), loc_2.Col(),
+                                      loc_2.Row() + (10 * tile_size),
+                                      (loc_2.Col() + tile_size)));
+
+  // Draws the "HIT 'ENTER' TO PLAY
+  const cinder::ivec2 size = {500, 50};
+  const Color color = Color::white();
+
+  PrintText("ENTER TO PLAY", color, size,
+            {(FLAGS_height / 2) * tile_size, (((FLAGS_width / 2) + 6) * (tile_size - 4))});
+
+  // Draws the "HIT 'SPACE' TO VIEW LEADERBOARD
+  PrintText("SPACE FOR LEADERBOARD", color, size,
+            {(FLAGS_height / 2) * tile_size, (((FLAGS_width / 2) + 8) * (tile_size - 4))});
 
 }
 
@@ -222,7 +254,7 @@ void MyApp::DrawNewGame() const {
   const cinder::ivec2 size = {500, 50};
   const Color color = Color::white();
 
-  PrintText("Press 'ENTER' to begin", color, size,
+  PrintText("Hit -ENTER- to begin", color, size,
             {(FLAGS_height / 2) * tile_size, (FLAGS_width / 12) * (tile_size - 4)});
 }
 
@@ -230,7 +262,7 @@ void MyApp::DrawGameReset() const {
   const cinder::ivec2 size = {500, 50};
   const Color color = Color::white();
 
-  PrintText("Uh oh! Hit 'ENTER'", color, size,
+  PrintText("Hit -ENTER- to continue", color, size,
             {(FLAGS_height / 2) * tile_size, (FLAGS_width / 12) * (tile_size - 4)});
 }
 
@@ -351,8 +383,21 @@ void MyApp::keyDown(KeyEvent event) {
       break;
     }
     case KeyEvent::KEY_RETURN:{
-      state = GameState::kPlaying;
+      if (state == GameState::kPreGame) {
+        state = GameState::kNewGame;
+
+      } else if (state == GameState::kNewGame || state == GameState::kGameReset) {
+        state = GameState::kPlaying;
+      }
       break;
+    }
+    case KeyEvent::KEY_SPACE: {
+      if (state == GameState::kPreGame) {
+        state = GameState::kGameOver;
+
+      } else if (state == GameState::kGameOver) {
+        state = GameState::kPreGame;
+      }
     }
   }
 }
