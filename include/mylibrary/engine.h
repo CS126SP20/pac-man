@@ -23,13 +23,13 @@ using cinder::app::KeyEvent;
 const Location kStartLocPacMan{14, 20};
 const Location kStartLocGhost{12, 17};
 
-const size_t kNumGhosts = 4;
 const size_t kStartScore = 0;
+const size_t kNumGhosts = 4;
 
-const size_t kCherryPts = 100;
-const size_t kGhostPts = 200;
 const size_t kNormalFoodPts = 10;
 const size_t kSpecialFoodPts = 50;
+const size_t kCherryPts = 100;
+const size_t kGhostPts = 200;
 
 class Engine {
  public:
