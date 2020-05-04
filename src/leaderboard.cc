@@ -59,5 +59,4 @@ vector<Player> LeaderBoard::RetrieveHighScores(const size_t limit) {
     std::cout << e.what() << " while retrieving scores" << std::endl;
   }
 }
-
 }

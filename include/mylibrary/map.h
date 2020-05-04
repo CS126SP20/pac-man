@@ -25,17 +25,19 @@ using std::vector;
 
 class Map {
  public:
+  // Constructor
   Map();
 
+  // Parses the file and populates Map layout and food vectors
   void ParseFile(const string& file);
 
-  void SetLayout(const vector<vector<char>>& given_layout);
+  // Getter and setter for layout, a vector of vectors of chars
   vector<vector<char>> GetLayout() const;
+  void SetLayout(const vector<vector<char>>& given_layout);
 
-  void SetFood(const vector<Food>& given_food);
+  // Getter and setter for food, a vector of Food objects
   vector<Food> GetFood() const;
-
-  void ResetFood(const string& file);
+  void SetFood(const vector<Food>& given_food);
 
  private:
   vector<vector<char>> layout;

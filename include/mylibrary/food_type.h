@@ -7,9 +7,9 @@
 
 namespace myapp {
 enum class FoodType {
-  kNormal,
-  kCherry,
-  kSpecial,
+  kNormal,      // 10 points
+  kCherry,      // 100 points
+  kSpecial,     // 50 points; allows PacMan to eat ghosts
 };
 }
 

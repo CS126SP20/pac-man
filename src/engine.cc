@@ -27,7 +27,6 @@ Location FromDirection(const Direction direction) {
     case Direction::kRight:
       return {+1, 0};
   }
-
   throw std::out_of_range("switch statement not matched");
 }
 
@@ -38,10 +37,6 @@ bool IsOpposite(const Direction lhs, const Direction rhs) {
           (lhs == Direction::kLeft && rhs == Direction::kRight) ||
           (lhs == Direction::kRight && rhs == Direction::kLeft));
 }
-
-PacMan Engine::GetPacMan() const { return pacman; }
-
-vector<Ghost> Engine::GetGhosts() const { return ghosts; }
 
 Engine::Engine(size_t given_width, size_t given_height)
     : Engine{given_width, given_height, static_cast<unsigned>(std::rand())} {}
@@ -86,25 +81,6 @@ void Engine::StepPacMan() {
   }
 }
 
-void Engine::Reset() {
-  pacman.SetLocation(kStartLocPacMan);
-  pacman.SetDirection(Direction::kUp);
-  hit_ghost = false;
-  ate_special_food = false;
-
-  for (int i = 0; i < ghosts.size(); i++) {
-    Location loc = Location(kStartLocGhost.Row() + i, kStartLocGhost.Col());
-    ghosts.at(i).SetLocation(loc);
-    ghosts.at(i).SetInBox(true);
-  }
-}
-
-void Engine::ResetAll() {
-  Reset();
-  score = kStartScore;
-  pacman.SetLives(kNumLives);
-}
-
 void Engine::StepGhosts() {
   for (int i = 0; i < kNumGhosts; i++) {
     Location curr_loc = ghosts.at(i).GetLocation();
@@ -112,7 +88,7 @@ void Engine::StepGhosts() {
 
     // This means the ghost is not in the starting box
     if (!(curr_loc.Row() > 10 && curr_loc.Row() < 17 && curr_loc.Col() > 15
-        && curr_loc.Col() < 19)) {
+          && curr_loc.Col() < 19)) {
       ghosts.at(i).SetInBox(false);
     }
 
@@ -152,23 +128,27 @@ void Engine::EatFood() {
 
   for (int i = 0; i < food.size(); i++) {
     if (food.at(i).GetLocation() == curr_loc) {
+
       if (food.at(i).GetFoodType() == FoodType::kNormal) {
-        score += 10;
+        score += kNormalFoodPts;
+
         food.erase(food.begin() + i);
         map.SetFood(food);
         break;
 
       } else if (food.at(i).GetFoodType() == FoodType::kCherry) {
-        score += 100;
+        score += kCherryPts;
+
         food.erase(food.begin() + i);
         map.SetFood(food);
         break;
 
       } else if (food.at(i).GetFoodType() == FoodType::kSpecial) {
-        score += 50;
+        score += kSpecialFoodPts;
+        ate_special_food = true;
+
         food.erase(food.begin() + i);
         map.SetFood(food);
-        ate_special_food = true;
         break;
       }
     }
@@ -180,19 +160,44 @@ void Engine::CheckCollisions() {
 
   for (int i = 0; i < ghosts.size(); i++) {
     if (curr_loc == ghosts.at(i).GetLocation()) {
+
       if (ate_special_food) {
+        score += kGhostPts;
         ghosts.at(i).SetInBox(true);
-        score += 200;
+
+        // Moves ghosts back into the starting box
         Location target_loc = Location(kStartLocGhost.Row() + i, kStartLocGhost.Col());
         ghosts.at(i).SetLocation(target_loc);
 
       } else {
+        // PacMan loses a life
         int curr_lives = pacman.GetLives();
         pacman.SetLives(curr_lives - 1);
         hit_ghost = true;
       }
     }
   }
+}
+
+bool Engine::HasWon() const { return map.GetFood().empty(); }
+
+void Engine::Reset() {
+  pacman.SetLocation(kStartLocPacMan);
+  pacman.SetDirection(Direction::kUp);
+  hit_ghost = false;
+  ate_special_food = false;
+
+  for (int i = 0; i < ghosts.size(); i++) {
+    Location loc = Location(kStartLocGhost.Row() + i, kStartLocGhost.Col());
+    ghosts.at(i).SetLocation(loc);
+    ghosts.at(i).SetInBox(true);
+  }
+}
+
+void Engine::ResetAll() {
+  Reset();
+  score = kStartScore;
+  pacman.SetLives(kNumLives);
 }
 
 std::vector<Direction> Engine::GetPossDirections(Ghost ghost) {
@@ -229,19 +234,18 @@ Location Engine::GetTargetLoc(const Location& curr_loc, const Direction& curr_d)
   return ((curr_loc + d_loc)) % Location(height, width);
 }
 
+PacMan Engine::GetPacMan() const { return pacman; }
+
+vector<Ghost> Engine::GetGhosts() const { return ghosts; }
+
+Map Engine::GetMap() const { return map; }
+
 void Engine::SetMap(const Map& given_map) {
   map = given_map;
   map.SetFood(given_map.GetFood());
 }
 
-Map Engine::GetMap() const { return map; }
-
 size_t Engine::GetScore() const { return score; }
-
-Direction Engine::SetPMDirection(const Direction& given_direction) {
-  pacman.SetLastDirection(pacman.GetDirection());
-  pacman.SetDirection(given_direction);
-}
 
 bool Engine::GetAteSpecialFood() const { return ate_special_food; }
 
@@ -251,12 +255,10 @@ void Engine::SetAteSpecialFood(const bool &given_bool) {
 
 bool Engine::GetHitGhost() const { return hit_ghost; }
 
-void Engine::SetHitGhost(const bool& given_bool) {
-  hit_ghost = given_bool;
+Direction Engine::SetDirection(const Direction& given_direction) {
+  pacman.SetLastDirection(pacman.GetDirection());
+  pacman.SetDirection(given_direction);
 }
-
-bool Engine::HasWon() const { return map.GetFood().empty(); }
-
 }
 
 #pragma clang diagnostic pop

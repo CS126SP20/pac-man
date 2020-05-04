@@ -12,13 +12,14 @@ namespace myapp {
 
 class Food {
  public:
+  // Constructor
   explicit Food(const Location& given_loc, const FoodType& given_type);
 
+  // Getter for the location of the food
   Location GetLocation() const;
-  Location SetLocation(const Location& given_loc);
 
+  // Getter for the type of the food
   FoodType GetFoodType() const;
-  FoodType SetFoodType(const FoodType& given_type);
 
  private:
   Location loc;

@@ -57,6 +57,8 @@
     
 - **5/3/20**
     - Fixed small issue with the audio when Pac-Man dies
+    - Added special audio for when Pac-Man can eat ghosts
+    - Added 'waka-waka' audio, but I commented it out for now because it's loud
     - Expanded game play so that user keeps playing until they lose all 3 lives. 
       And when the user loses and goes back to the main screen, if they press
       'enter' again, they can play a whole new game where everything (including 

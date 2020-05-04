@@ -160,7 +160,7 @@ void MyApp::update() {
 
   if (engine.HasWon()) {
     Map map = engine.GetMap();
-    map.ResetFood(FLAGS_map_file);
+    map.ParseFile(FLAGS_map_file);
 
     engine.SetMap(map);
     engine.Reset();
@@ -169,7 +169,7 @@ void MyApp::update() {
 
   if (state == GameState::kNewGame) {
     Map map = engine.GetMap();
-    map.ResetFood(FLAGS_map_file);
+    map.ParseFile(FLAGS_map_file);
 
     engine.SetMap(map);
     engine.ResetAll();
@@ -472,19 +472,19 @@ void MyApp::DyingAudio() const {
 void MyApp::keyDown(KeyEvent event) {
   switch (event.getCode()) {
     case KeyEvent::KEY_UP: {
-      engine.SetPMDirection(Direction::kUp);
+      engine.SetDirection(Direction::kUp);
       break;
     }
     case KeyEvent::KEY_DOWN:{
-      engine.SetPMDirection(Direction::kDown);
+      engine.SetDirection(Direction::kDown);
       break;
     }
     case KeyEvent::KEY_LEFT:{
-      engine.SetPMDirection(Direction::kLeft);
+      engine.SetDirection(Direction::kLeft);
       break;
     }
     case KeyEvent::KEY_RIGHT:{
-      engine.SetPMDirection(Direction::kRight);
+      engine.SetDirection(Direction::kRight);
       break;
     }
     case KeyEvent::KEY_RETURN:{

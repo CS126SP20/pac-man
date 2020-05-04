@@ -30,5 +30,4 @@ bool Ghost::GetInBox() const { return in_box; }
 bool Ghost::SetInBox(const bool& given_bool) {
   in_box = given_bool;
 }
-
 }
