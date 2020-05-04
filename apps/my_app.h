@@ -50,6 +50,8 @@ class MyApp : public cinder::app::App {
   void DrawLives() const;
 
   void BackgroundMusic() const;
+  void EatingAudio() const;
+  void DyingAudio() const;
 
   bool GhostsInBox() const;
 
@@ -83,9 +85,7 @@ class MyApp : public cinder::app::App {
   cinder::gl::Texture2dRef cherry_image;
 
   cinder::audio::VoiceRef background_music;
-  cinder::audio::VoiceRef eating_fruit;
-  cinder::audio::VoiceRef eating_ghost;
-  cinder::audio::VoiceRef eating_standard;
+  cinder::audio::VoiceRef eating;
   cinder::audio::VoiceRef pacman_dying;
 };
 

@@ -53,6 +53,6 @@
     - Created UI for a home screen and leaderboard/game over screen 
     - Changed the font to an arcade font I downloaded on my computer
     - Added background music
-    - Added audio for PacMan dying
+    - Added audio for PacMan dying and eating 
 
 ---
