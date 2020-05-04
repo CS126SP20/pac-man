@@ -64,6 +64,7 @@ void MyApp::update() {
   const auto time = system_clock::now();
 
   BackgroundMusic();
+  EatingAudio();
 
   // Populates the leaderboard when the game is over
   if (state == GameState::kGameOver) {
@@ -75,7 +76,6 @@ void MyApp::update() {
   }
 
   if (state == GameState::kPlaying || state == GameState::kPlayingSpecial) {
-    EatingAudio();
     DyingAudio();
 
     if (time - last_time > std::chrono::milliseconds(65)) {
@@ -379,19 +379,21 @@ void MyApp::BackgroundMusic() const {
 }
 
 void MyApp::EatingAudio() const {
-  /*if (state == GameState::kPlaying || state == GameState::kPlayingSpecial) {
-    if (!eating->isPlaying()) {
-      eating->start();
-    }
-  } else {
-    eating->stop();
-  }*/
-
   if (state == GameState::kPlayingSpecial) {
     if (!eating_special->isPlaying()) {
       eating_special->start();
     }
-  } else {
+  }
+
+  if (state == GameState::kPlaying || state == GameState::kPlayingSpecial) {
+    if (!eating->isPlaying()) {
+      eating->setVolume(0.5f);
+      eating->start();
+    }
+  }
+
+  if (state != GameState::kPlaying && state != GameState::kPlayingSpecial) {
+    eating->stop();
     eating_special->stop();
   }
 }
