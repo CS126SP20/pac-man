@@ -69,5 +69,5 @@
     - Since I decided to use SQLite instead of Choreograph, I added 
       more images of Pac-Man facing other directions (left, up, down) and
       added code so that Pac-Man faces the correct direction when moving
-
+    - Cleaned up code and added comments to files 
 ---

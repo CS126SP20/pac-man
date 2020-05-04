@@ -64,7 +64,6 @@ void MyApp::update() {
   const auto time = system_clock::now();
 
   BackgroundMusic();
-  DyingAudio();
 
   // Populates the leaderboard when the game is over
   if (state == GameState::kGameOver) {
@@ -77,6 +76,7 @@ void MyApp::update() {
 
   if (state == GameState::kPlaying || state == GameState::kPlayingSpecial) {
     EatingAudio();
+    DyingAudio();
 
     if (time - last_time > std::chrono::milliseconds(65)) {
       if (engine.GetPacMan().GetLives() <= 0) {
@@ -85,6 +85,7 @@ void MyApp::update() {
       } else if (engine.GetHitGhost()) {
         engine.Reset();
         state = GameState::kGameReset;
+        DyingAudio();
 
       } else {
         engine.Step();
@@ -396,7 +397,7 @@ void MyApp::EatingAudio() const {
 }
 
 void MyApp::DyingAudio() const {
-  if (!pacman_dying->isPlaying() && state == GameState::kGameReset) {
+  if (state == GameState::kGameReset) {
     pacman_dying->start();
   }
 
