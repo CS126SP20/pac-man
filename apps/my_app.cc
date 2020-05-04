@@ -45,71 +45,13 @@ MyApp::MyApp()
       tile_size(FLAGS_tilesize) {}
 
 void MyApp::setup() {
-  title_image = cinder::gl::Texture::create(loadImage(
-      loadAsset("pac_man_title.png")));
-
-  title_decor = cinder::gl::Texture::create(loadImage(
-      loadAsset("title_decor.png")));
-
-  game_over = cinder::gl::Texture::create(loadImage(
-      loadAsset("game_over.png")));
-
-  pacman_images.push_back(cinder::gl::Texture::create(loadImage(
-      loadAsset("pacman_RIGHT.png"))));
-
-  pacman_images.push_back(cinder::gl::Texture::create(loadImage(
-      loadAsset("pacman_DOWN.png"))));
-
-  pacman_images.push_back(cinder::gl::Texture::create(loadImage(
-      loadAsset("pacman_LEFT.png"))));
-
-  pacman_images.push_back(cinder::gl::Texture::create(loadImage(
-      loadAsset("pacman_UP.png"))));
-
-  ghost_images.push_back(cinder::gl::Texture::create(loadImage(
-      loadAsset("inky.png"))));
-
-  ghost_images.push_back(cinder::gl::Texture::create(loadImage(
-      loadAsset("blinky.png"))));
-
-  ghost_images.push_back(cinder::gl::Texture::create(loadImage(
-      loadAsset("pinky.png"))));
-
-  ghost_images.push_back(cinder::gl::Texture::create(loadImage(
-      loadAsset("clyde.png"))));
-
-  special_ghost = cinder::gl::Texture::create(loadImage(
-      loadAsset("ghost_special.png")));
-
-  gate_image = cinder::gl::Texture::create(loadImage(
-          loadAsset("cyan_gate_block.png")));
-
-  wall_image = cinder::gl::Texture::create(loadImage(
-      loadAsset("blue_wall_block.png")));
-
-  pm_life_image = cinder::gl::Texture::create(loadImage(
-      loadAsset("pac_man_lives.png")));
-
-  cherry_image = cinder::gl::Texture::create(loadImage(
-      loadAsset("cherry.png")));
-
-  cinder::audio::SourceFileRef sourceFile_1 =
-      cinder::audio::load( cinder::app::loadAsset("waka-waka.wav") );
-  cinder::audio::SourceFileRef sourceFile_2 =
-      cinder::audio::load( cinder::app::loadAsset("Death.wav") );
-  cinder::audio::SourceFileRef sourceFile_3 =
-      cinder::audio::load( cinder::app::loadAsset("Intro.wav") );
-  cinder::audio::SourceFileRef sourceFile_4 =
-      cinder::audio::load( cinder::app::loadAsset("special_mode.wav") );
-
-  eating = cinder::audio::Voice::create ( sourceFile_1 );
-  pacman_dying = cinder::audio::Voice::create ( sourceFile_2 );
-  background_music = cinder::audio::Voice::create ( sourceFile_3 );
-  eating_special = cinder::audio::Voice::create(sourceFile_4);
+  SetUpImages();
+  SetUpAudio();
 
   // Start playing audio from the voice
   background_music->start();
 
+  // Sets up the map
   Map map = Map();
   map.ParseFile(FLAGS_map_file);
   engine.SetMap(map);
@@ -124,6 +66,7 @@ void MyApp::update() {
   BackgroundMusic();
   DyingAudio();
 
+  // Populates the leaderboard when the game is over
   if (state == GameState::kGameOver) {
     if (top_players.empty()) {
       leaderboard.AddScoreToLeaderBoard({player_name, engine.GetScore()});
@@ -143,14 +86,13 @@ void MyApp::update() {
         engine.Reset();
         state = GameState::kGameReset;
 
-
       } else {
         engine.Step();
         last_time = time;
       }
     }
 
-    // Reverts back to regular ghosts after 5 seconds
+    // Reverts back to regular ghosts after 5 seconds if in 'special' mode
     if (time - last_time_special > std::chrono::seconds(8)
         && state == GameState::kPlayingSpecial) {
       state = GameState::kPlaying;
@@ -158,6 +100,8 @@ void MyApp::update() {
     }
   }
 
+  // If the user has won this round, reset the engine (but not points or lives)
+  // for a new game
   if (engine.HasWon()) {
     Map map = engine.GetMap();
     map.ParseFile(FLAGS_map_file);
@@ -167,6 +111,8 @@ void MyApp::update() {
     state = GameState::kGameReset;
   }
 
+  // If the user is on the home screen, reset the engine including points and
+  // lives for a new game
   if (state == GameState::kNewGame) {
     Map map = engine.GetMap();
     map.ParseFile(FLAGS_map_file);
@@ -230,16 +176,6 @@ void PrintText(const string& text, const Color& color, const cinder::ivec2& size
   cinder::gl::draw(texture, locp);
 }
 
-bool MyApp::GhostsInBox() const {
-  std::vector<Ghost> ghosts = engine.GetGhosts();
-  for (auto & ghost : ghosts) {
-    if (ghost.GetInBox()) {
-      return false;
-    }
-  }
-  return true;
-}
-
 void MyApp::DrawBackground() const {
   vector<vector<char>> layout = engine.GetMap().GetLayout();
 
@@ -253,9 +189,9 @@ void MyApp::DrawBackground() const {
       if (c == '#') {
         // Draws the walls
         cinder::gl::draw(wall_image,Rectf(tile_size * loc.Row(),
-                                        tile_size * loc.Col(),
-                                        tile_size * loc.Row() + tile_size,
-                                        tile_size * loc.Col() + tile_size));
+                                          tile_size * loc.Col(),
+                                          tile_size * loc.Row() + tile_size,
+                                          tile_size * loc.Col() + tile_size));
 
         // Draws the gates
       } else if (c == '&' && ((state == GameState::kNewGame) ||
@@ -282,7 +218,7 @@ void MyApp::DrawPreGame() const {
 
   // Draws the image below the PAC-MAN title
   Location loc_2 = Location(((FLAGS_width / 2) - 9) * tile_size,
-                          ((FLAGS_height / 2) * tile_size));
+                            ((FLAGS_height / 2) * tile_size));
   cinder::gl::draw(title_decor, Rectf(loc_2.Row(), loc_2.Col(),
                                       loc_2.Row() + (10 * tile_size),
                                       (loc_2.Col() + tile_size)));
@@ -326,8 +262,8 @@ void MyApp::DrawGameOver() const {
                           (FLAGS_width / 9) * tile_size);
 
   cinder::gl::draw(game_over, Rectf(loc.Row(), loc.Col(),
-                                      loc.Row() + (15 * tile_size),
-                                      (loc.Col() + (4 * tile_size))));
+                                    loc.Row() + (15 * tile_size),
+                                    (loc.Col() + (4 * tile_size))));
 
   PrintText("-SPACE- to return to the main menu", color, size,
             {(FLAGS_height / 2) * tile_size, ((FLAGS_width / 6) * 5) * (tile_size)});
@@ -357,9 +293,9 @@ void MyApp::DrawPacMan() const {
   }
 
   cinder::gl::draw(curr_image, Rectf(tile_size * loc.Row(),
-                                        tile_size * loc.Col(),
-                                        tile_size * loc.Row() + tile_size,
-                                        tile_size * loc.Col() + tile_size));
+                                     tile_size * loc.Col(),
+                                     tile_size * loc.Row() + tile_size,
+                                     tile_size * loc.Col() + tile_size));
 }
 
 void MyApp::DrawGhosts() const {
@@ -469,6 +405,85 @@ void MyApp::DyingAudio() const {
   }
 }
 
+bool MyApp::GhostsInBox() const {
+  std::vector<Ghost> ghosts = engine.GetGhosts();
+  for (auto & ghost : ghosts) {
+    if (ghost.GetInBox()) {
+      return false;
+    }
+  }
+  return true;
+}
+
+void MyApp::SetUpImages() {
+  title_image = cinder::gl::Texture::create(loadImage(
+      loadAsset("pac_man_title.png")));
+
+  title_decor = cinder::gl::Texture::create(loadImage(
+      loadAsset("title_decor.png")));
+
+  game_over = cinder::gl::Texture::create(loadImage(
+      loadAsset("game_over.png")));
+
+  pacman_images.push_back(cinder::gl::Texture::create(loadImage(
+      loadAsset("pacman_RIGHT.png"))));
+
+  pacman_images.push_back(cinder::gl::Texture::create(loadImage(
+      loadAsset("pacman_DOWN.png"))));
+
+  pacman_images.push_back(cinder::gl::Texture::create(loadImage(
+      loadAsset("pacman_LEFT.png"))));
+
+  pacman_images.push_back(cinder::gl::Texture::create(loadImage(
+      loadAsset("pacman_UP.png"))));
+
+  ghost_images.push_back(cinder::gl::Texture::create(loadImage(
+      loadAsset("inky.png"))));
+
+  ghost_images.push_back(cinder::gl::Texture::create(loadImage(
+      loadAsset("blinky.png"))));
+
+  ghost_images.push_back(cinder::gl::Texture::create(loadImage(
+      loadAsset("pinky.png"))));
+
+  ghost_images.push_back(cinder::gl::Texture::create(loadImage(
+      loadAsset("clyde.png"))));
+
+  special_ghost = cinder::gl::Texture::create(loadImage(
+      loadAsset("ghost_special.png")));
+
+  gate_image = cinder::gl::Texture::create(loadImage(
+      loadAsset("cyan_gate_block.png")));
+
+  wall_image = cinder::gl::Texture::create(loadImage(
+      loadAsset("blue_wall_block.png")));
+
+  pm_life_image = cinder::gl::Texture::create(loadImage(
+      loadAsset("pac_man_lives.png")));
+
+  cherry_image = cinder::gl::Texture::create(loadImage(
+      loadAsset("cherry.png")));
+}
+
+void MyApp::SetUpAudio() {
+  cinder::audio::SourceFileRef sourceFile_1 =
+      cinder::audio::load( cinder::app::loadAsset("waka-waka.wav") );
+
+  cinder::audio::SourceFileRef sourceFile_2 =
+      cinder::audio::load( cinder::app::loadAsset("Death.wav") );
+
+  cinder::audio::SourceFileRef sourceFile_3 =
+      cinder::audio::load( cinder::app::loadAsset("Intro.wav") );
+
+  cinder::audio::SourceFileRef sourceFile_4 =
+      cinder::audio::load( cinder::app::loadAsset("special_mode.wav") );
+
+  eating = cinder::audio::Voice::create ( sourceFile_1 );
+  pacman_dying = cinder::audio::Voice::create ( sourceFile_2 );
+  background_music = cinder::audio::Voice::create ( sourceFile_3 );
+  eating_special = cinder::audio::Voice::create(sourceFile_4);
+}
+
 void MyApp::keyDown(KeyEvent event) {
   switch (event.getCode()) {
     case KeyEvent::KEY_UP: {
@@ -506,5 +521,4 @@ void MyApp::keyDown(KeyEvent event) {
     }
   }
 }
-
 }  // namespace myapp

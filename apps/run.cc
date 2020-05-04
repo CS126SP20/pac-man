@@ -57,9 +57,7 @@ void SetUp(App::Settings* settings) {
 
   std::srand(std::time(0));
 }
-
 }  // namespace myapp
-
 
 // This is a macro that runs the application.
 CINDER_APP(myapp::MyApp,

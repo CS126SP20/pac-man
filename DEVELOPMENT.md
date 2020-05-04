@@ -59,10 +59,13 @@
     - Fixed small issue with the audio when Pac-Man dies
     - Added special audio for when Pac-Man can eat ghosts
     - Added 'waka-waka' audio, but I commented it out for now because it's loud
+    - Cleaned up code and added comments
+    
     - Expanded game play so that user keeps playing until they lose all 3 lives. 
       And when the user loses and goes back to the main screen, if they press
       'enter' again, they can play a whole new game where everything (including 
       lives and score) is reset. 
+      
     - Since I decided to use SQLite instead of Choreograph, I added 
       more images of Pac-Man facing other directions (left, up, down) and
       added code so that Pac-Man faces the correct direction when moving
