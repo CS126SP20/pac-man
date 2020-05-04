@@ -94,16 +94,18 @@ void MyApp::setup() {
       loadAsset("cherry.png")));
 
   cinder::audio::SourceFileRef sourceFile_1 =
-      cinder::audio::load( cinder::app::loadAsset("waka_waka"
-                                                 ".wav") );
+      cinder::audio::load( cinder::app::loadAsset("waka-waka.wav") );
   cinder::audio::SourceFileRef sourceFile_2 =
       cinder::audio::load( cinder::app::loadAsset("Death.wav") );
   cinder::audio::SourceFileRef sourceFile_3 =
       cinder::audio::load( cinder::app::loadAsset("Intro.wav") );
+  cinder::audio::SourceFileRef sourceFile_4 =
+      cinder::audio::load( cinder::app::loadAsset("special_mode.wav") );
 
   eating = cinder::audio::Voice::create ( sourceFile_1 );
   pacman_dying = cinder::audio::Voice::create ( sourceFile_2 );
   background_music = cinder::audio::Voice::create ( sourceFile_3 );
+  eating_special = cinder::audio::Voice::create(sourceFile_4);
 
   // Start playing audio from the voice
   background_music->start();
@@ -120,6 +122,7 @@ void MyApp::update() {
   const auto time = system_clock::now();
 
   BackgroundMusic();
+  DyingAudio();
 
   if (state == GameState::kGameOver) {
     if (top_players.empty()) {
@@ -131,7 +134,6 @@ void MyApp::update() {
 
   if (state == GameState::kPlaying || state == GameState::kPlayingSpecial) {
     EatingAudio();
-    DyingAudio();
 
     if (time - last_time > std::chrono::milliseconds(65)) {
       if (engine.GetPacMan().GetLives() <= 0) {
@@ -140,6 +142,7 @@ void MyApp::update() {
       } else if (engine.GetHitGhost()) {
         engine.Reset();
         state = GameState::kGameReset;
+
 
       } else {
         engine.Step();
@@ -439,15 +442,29 @@ void MyApp::BackgroundMusic() const {
 }
 
 void MyApp::EatingAudio() const {
+  /*if (state == GameState::kPlaying || state == GameState::kPlayingSpecial) {
+    if (!eating->isPlaying()) {
+      eating->start();
+    }
+  } else {
+    eating->stop();
+  }*/
 
+  if (state == GameState::kPlayingSpecial) {
+    if (!eating_special->isPlaying()) {
+      eating_special->start();
+    }
+  } else {
+    eating_special->stop();
+  }
 }
 
 void MyApp::DyingAudio() const {
-  if (engine.GetHitGhost()) {
+  if (!pacman_dying->isPlaying() && state == GameState::kGameReset) {
     pacman_dying->start();
   }
 
-  if (state != GameState::kGameReset) {
+  if (pacman_dying->isPlaying() && state != GameState::kGameReset) {
     pacman_dying->stop();
   }
 }

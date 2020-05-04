@@ -86,6 +86,7 @@ class MyApp : public cinder::app::App {
 
   cinder::audio::VoiceRef background_music;
   cinder::audio::VoiceRef eating;
+  cinder::audio::VoiceRef eating_special;
   cinder::audio::VoiceRef pacman_dying;
 };
 

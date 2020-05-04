@@ -61,6 +61,8 @@
       And when the user loses and goes back to the main screen, if they press
       'enter' again, they can play a whole new game where everything (including 
       lives and score) is reset. 
-    - 
+    - Since I decided to use SQLite instead of Choreograph, I added 
+      more images of Pac-Man facing other directions (left, up, down) and
+      added code so that Pac-Man faces the correct direction when moving
 
 ---
