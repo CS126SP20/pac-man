@@ -18,6 +18,11 @@
 
 namespace myapp {
 
+const int kPacManRightImage = 0;
+const int kPacManDownImage = 1;
+const int kPacManLeftImage = 2;
+const int kPacManUpImage = 3;
+
 enum class GameState {
   kPreGame, // Home screen
   kNewGame, // Before the start of a new game
@@ -71,7 +76,7 @@ class MyApp : public cinder::app::App {
 
   cinder::gl::Texture2dRef game_over;
 
-  cinder::gl::Texture2dRef pac_man_image;
+  std::vector<cinder::gl::Texture2dRef> pacman_images;
   std::vector<cinder::gl::Texture2dRef> ghost_images;
   cinder::gl::Texture2dRef special_ghost;
   cinder::gl::Texture2dRef gate_image;

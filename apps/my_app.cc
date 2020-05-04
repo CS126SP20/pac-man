@@ -54,8 +54,17 @@ void MyApp::setup() {
   game_over = cinder::gl::Texture::create(loadImage(
       loadAsset("game_over.png")));
 
-  pac_man_image = cinder::gl::Texture::create(loadImage(
-      loadAsset("pacman.png")));
+  pacman_images.push_back(cinder::gl::Texture::create(loadImage(
+      loadAsset("pacman_RIGHT.png"))));
+
+  pacman_images.push_back(cinder::gl::Texture::create(loadImage(
+      loadAsset("pacman_DOWN.png"))));
+
+  pacman_images.push_back(cinder::gl::Texture::create(loadImage(
+      loadAsset("pacman_LEFT.png"))));
+
+  pacman_images.push_back(cinder::gl::Texture::create(loadImage(
+      loadAsset("pacman_UP.png"))));
 
   ghost_images.push_back(cinder::gl::Texture::create(loadImage(
       loadAsset("inky.png"))));
@@ -331,9 +340,20 @@ void MyApp::DrawGameOver() const {
 
 void MyApp::DrawPacMan() const {
   PacMan pacman = engine.GetPacMan();
+  Direction d = pacman.GetDirection();
   const Location loc = pacman.GetLocation();
 
-  cinder::gl::draw(pac_man_image, Rectf(tile_size * loc.Row(),
+  cinder::gl::Texture2dRef curr_image = pacman_images.at(kPacManRightImage);
+
+  if (d == Direction::kDown) {
+    curr_image = pacman_images.at(kPacManDownImage);
+  } else if (d == Direction::kLeft) {
+    curr_image = pacman_images.at(kPacManLeftImage);
+  } else if (d == Direction::kUp) {
+    curr_image = pacman_images.at(kPacManUpImage);
+  }
+
+  cinder::gl::draw(curr_image, Rectf(tile_size * loc.Row(),
                                         tile_size * loc.Col(),
                                         tile_size * loc.Row() + tile_size,
                                         tile_size * loc.Col() + tile_size));

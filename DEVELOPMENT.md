@@ -54,5 +54,13 @@
     - Changed the font to an arcade font I downloaded on my computer
     - Added background music
     - Added audio for PacMan dying and eating 
+    
+- **5/3/20**
+    - Fixed small issue with the audio when Pac-Man dies
+    - Expanded game play so that user keeps playing until they lose all 3 lives. 
+      And when the user loses and goes back to the main screen, if they press
+      'enter' again, they can play a whole new game where everything (including 
+      lives and score) is reset. 
+    - 
 
 ---
