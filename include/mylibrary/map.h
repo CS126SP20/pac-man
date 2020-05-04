@@ -35,6 +35,8 @@ class Map {
   void SetFood(const vector<Food>& given_food);
   vector<Food> GetFood() const;
 
+  void ResetFood(const string& file);
+
  private:
   vector<vector<char>> layout;
   vector<Food> food;

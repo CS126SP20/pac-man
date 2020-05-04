@@ -22,6 +22,7 @@ using cinder::app::KeyEvent;
 const Location kStartLocPacMan{14, 20};
 const Location kStartLocGhost{12, 17};
 const size_t kNumGhosts = 4;
+const size_t kStartScore = 0;
 
 class Engine {
  public:
@@ -47,9 +48,17 @@ class Engine {
   size_t GetScore() const;
 
   bool GetHitGhost() const;
+
   void SetHitGhost(const bool& given_bool);
 
+  bool HasWon() const;
+
+  // Occurs when Pac-Man loses a life:
+  // Pac-Man starts at the original location and ghosts start in the box,
+  // but nothing else resets
   void Reset();
+
+  void ResetAll();
 
  private:
   void StepPacMan();

@@ -144,7 +144,23 @@ void MyApp::update() {
       state = GameState::kPlaying;
       engine.SetAteSpecialFood(false);
     }
+  }
 
+  if (engine.HasWon()) {
+    Map map = engine.GetMap();
+    map.ResetFood(FLAGS_map_file);
+
+    engine.SetMap(map);
+    engine.Reset();
+    state = GameState::kGameReset;
+  }
+
+  if (state == GameState::kNewGame) {
+    Map map = engine.GetMap();
+    map.ResetFood(FLAGS_map_file);
+
+    engine.SetMap(map);
+    engine.ResetAll();
   }
 }
 
@@ -166,8 +182,6 @@ void MyApp::draw() {
     }
 
     if (state == GameState::kGameReset) {
-      eating->stop();
-      engine.Reset();
       DrawGameReset();
     }
 

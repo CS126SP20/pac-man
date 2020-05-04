@@ -49,7 +49,7 @@ Engine::Engine(size_t given_width, size_t given_height)
 Engine::Engine(size_t given_width, size_t given_height, unsigned seed)
     : width{given_width}, height{given_height},
       pacman{kStartLocPacMan},
-      map{}, score{given_width - given_width},
+      map{}, score{kStartScore},
       ate_special_food{false}, hit_ghost{false},
       rng{seed} {
 
@@ -90,12 +90,19 @@ void Engine::Reset() {
   pacman.SetLocation(kStartLocPacMan);
   pacman.SetDirection(Direction::kUp);
   hit_ghost = false;
+  ate_special_food = false;
 
   for (int i = 0; i < ghosts.size(); i++) {
     Location loc = Location(kStartLocGhost.Row() + i, kStartLocGhost.Col());
     ghosts.at(i).SetLocation(loc);
     ghosts.at(i).SetInBox(true);
   }
+}
+
+void Engine::ResetAll() {
+  Reset();
+  score = kStartScore;
+  pacman.SetLives(kNumLives);
 }
 
 void Engine::StepGhosts() {
@@ -247,6 +254,8 @@ bool Engine::GetHitGhost() const { return hit_ghost; }
 void Engine::SetHitGhost(const bool& given_bool) {
   hit_ghost = given_bool;
 }
+
+bool Engine::HasWon() const { return map.GetFood().empty(); }
 
 }
 

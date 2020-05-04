@@ -19,9 +19,9 @@
 namespace myapp {
 
 enum class GameState {
-  kPreGame,
-  kNewGame,
-  kGameReset,
+  kPreGame, // Home screen
+  kNewGame, // Before the start of a new game
+  kGameReset, // When the level resets or restarts
   kPlaying,
   kPlayingSpecial,
   kGameOver,
@@ -54,11 +54,6 @@ class MyApp : public cinder::app::App {
   void DyingAudio() const;
 
   bool GhostsInBox() const;
-
-  // Occurs when Pac-Man loses a life:
-  // Pac-Man starts at the same spot and ghosts start in the box, but nothing
-  // else resets
-  void Reset();
 
  private:
   myapp::Engine engine;
