@@ -3,7 +3,14 @@
 [![license](https://img.shields.io/badge/license-MIT-green)](LICENSE)
 [![docs](https://img.shields.io/badge/docs-yes-brightgreen)](docs/README.md)
 
-Read [this document](https://cliutils.gitlab.io/modern-cmake/chapters/basics/structure.html) to understand the project
-layout.
+**Author**: Brianna Zhang - [bjzhang2@illinois.edu](mailto:example@illinois.edu)
 
-**Author**: Anonymous - [`example@illinois.edu`](mailto:example@illinois.edu)
+![alt text](https://github.com/bzhang33/final-project-bzhang33]/blob/[branch]/image.jpg?raw=true)
+
+
+**Dependencies:**
+* [cmake](https://cmake.org/)
+* 
+
+
+
