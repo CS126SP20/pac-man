@@ -60,7 +60,7 @@
     - Added special audio for when Pac-Man can eat ghosts
     - Added 'waka-waka' audio. Adjusted volume and logic so that the audios start 
       and stop playing at the correct times
-    - Cleaned up code and added comments
+    - Cleaned up code and added comments to files
     
     - Expanded game play so that user keeps playing until they lose all 3 lives. 
       And when the user loses and goes back to the main screen, if they press
@@ -69,6 +69,9 @@
       
     - Since I decided to use SQLite instead of Choreograph, I added 
       more images of Pac-Man facing other directions (left, up, down) and
-      added code so that Pac-Man faces the correct direction when moving
-    - Cleaned up code and added comments to files 
+      added code so that Pac-Man faces the correct direction when moving 
+    
+- **5/5/20**
+    - Added test cases for the following classes: Engine, Food, Ghost, Leaderboard,
+      Location, Map, and PacMan
 ---
