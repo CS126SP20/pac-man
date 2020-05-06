@@ -5,8 +5,7 @@
 
 **Author**: Brianna Zhang - [bjzhang2@illinois.edu](mailto:example@illinois.edu)
 
-![alt text](https://github.com/bzhang33/final-project-bzhang33]/blob/[branch]/image.jpg?raw=true)
-
+![alt text](https://github.com/bzhang33/final-project-bzhang33/assets/home_screen.png)
 
 **Dependencies:**
 * [cmake](https://cmake.org/)
