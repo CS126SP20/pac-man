@@ -4,7 +4,7 @@ Author: Brianna Zhang
 
 ---
 
-#### **IDEA**
+#### **IDEA** ####
 
 For my final project, I would like to design the game Pac-Man. 
 I have pretty standard background knowledge for this project, as 
@@ -16,7 +16,7 @@ animations, images, and sounds. This will keep me motivated in
 completing this project. 
 
 
-#### **EXTERNAL LIBRARIES:**
+#### **EXTERNAL LIBRARIES:** ####
 
 A specific external library that I plan to use is Choreograph. This
 external library will allow me to create animations for elements of 
@@ -31,25 +31,24 @@ library, and I used it to create my leaderboard.
 
 [Link to Choreograph](https://github.com/fffaraz/awesome-cpp)
 
-#### **ROUGH TIMELINE** 
+#### **ROUGH TIMELINE** ####
 
-##### **WEEK ONE:**
+##### **WEEK ONE:** #####
 * Create a single level. All elements should work properly (Pac-Man,
 ghosts, food, fruit, point system, etc.)
 
-##### **WEEK TWO:**
+##### **WEEK TWO:** #####
 * Create a home page that allows user to start a game or view
 high scores. 
 
 * Create a high score page that displays top scores.
 
-##### **WEEK THREE:**
+##### **WEEK THREE:** #####
 * Extend the game play so that the player keeps playing levels
 until they lose all their lives rather than simply completing
 one level. 
 
-#### **STRETCH GOALS**
-
+#### **STRETCH GOALS** ####
 If I complete this project early, a stretch goal I could implement would
 be creating multiple difficulties or settings. For example, I could create
 an 'easy' mode that gives the user more lives and has 2 ghosts instead of 4. 
